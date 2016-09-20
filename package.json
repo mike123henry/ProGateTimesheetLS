@@ -1,0 +1,16 @@
+{
+  "name": "pgs-ls",
+  "version": "1.0.0",
+  "description": "Pro Gate Security Location Specific Time Sheet",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "MikeH",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.0",
+    "react": "^15.3.2"
+  }
+}
