@@ -1,14 +1,24 @@
-const React = require('react');
+import React from 'react';
 
-let Main = React.createClass({
-
-    render: function(){
+export default React.createClass({
+    render(){
         return(
-            <div>
+             <div className="main-container">
                 <h1>This is Main.js</h1>
             </div>
         )
     }
-});
+})
 
-module.exports = Main;
+// let Main = React.createClass({
+
+//     render: function(){
+//         return(
+//             <div className="main-container">
+//                 <h1>This is Main.js</h1>
+//             </div>
+//         )
+//     }
+// });
+
+// module.exports = Main;

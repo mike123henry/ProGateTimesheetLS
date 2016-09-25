@@ -1,10 +1,24 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
+import  React from 'react';
+import { render } from'react-dom';
+import  {Router, browserHistory } from 'react-router';
+//import  {Router, Route, browserHistory, IndexRoute } from 'react-router';
 
-const Router = require('react-router').Router;
+//import Main from './components/Main.js'
+//const routes = require('./config/routes.js')
 
-const routes = require('./config/routes.js')
-ReactDOM.render(
-    <Router>{routes}</Router>,
+import routes from './config/routes.js'
+
+// render((
+//     <Router history={browserHistory}>
+//         <Route path="/" component={Main}/>
+//     </Router>),
+//     document.getElementById('app')
+// );
+
+
+render((
+    <Router history={browserHistory}>
+        {routes}
+    </Router>),
     document.getElementById('app')
 );

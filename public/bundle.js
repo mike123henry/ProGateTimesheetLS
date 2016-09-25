@@ -46,17 +46,37 @@
 
 	'use strict';
 
-	var React = __webpack_require__(1);
-	var ReactDOM = __webpack_require__(34);
+	var _react = __webpack_require__(1);
 
-	var Router = __webpack_require__(172).Router;
+	var _react2 = _interopRequireDefault(_react);
 
-	var routes = __webpack_require__(235);
-	ReactDOM.render(React.createElement(
-	    Router,
-	    null,
-	    routes
+	var _reactDom = __webpack_require__(34);
+
+	var _reactRouter = __webpack_require__(172);
+
+	var _routes = __webpack_require__(235);
+
+	var _routes2 = _interopRequireDefault(_routes);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// render((
+	//     <Router history={browserHistory}>
+	//         <Route path="/" component={Main}/>
+	//     </Router>),
+	//     document.getElementById('app')
+	// );
+
+
+	(0, _reactDom.render)(_react2.default.createElement(
+	    _reactRouter.Router,
+	    { history: _reactRouter.browserHistory },
+	    _routes2.default
 	), document.getElementById('app'));
+	//import  {Router, Route, browserHistory, IndexRoute } from 'react-router';
+
+	//import Main from './components/Main.js'
+	//const routes = require('./config/routes.js')
 
 /***/ },
 /* 1 */
@@ -27082,43 +27102,63 @@
 
 	'use strict';
 
-	var React = __webpack_require__(1);
-	var Router = __webpack_require__(172);
+	var _react = __webpack_require__(1);
 
-	var Route = Router.Route;
+	var _react2 = _interopRequireDefault(_react);
 
-	var IndexRoute = Router.IndexRoute;
+	var _reactRouter = __webpack_require__(172);
 
-	var Main = __webpack_require__(236);
+	var _Main = __webpack_require__(236);
 
-	module.exports = React.createElement(Route, { path: '/', component: Main });
+	var _Main2 = _interopRequireDefault(_Main);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	module.exports = _react2.default.createElement(_reactRouter.Route, { path: '/', component: _Main2.default });
 
 /***/ },
 /* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
-	var React = __webpack_require__(1);
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
 
-	var Main = React.createClass({
-	    displayName: 'Main',
+	var _react = __webpack_require__(1);
 
+	var _react2 = _interopRequireDefault(_react);
 
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _react2.default.createClass({
+	    displayName: "Main",
 	    render: function render() {
-	        return React.createElement(
-	            'div',
-	            null,
-	            React.createElement(
-	                'h1',
+	        return _react2.default.createElement(
+	            "div",
+	            { className: "main-container" },
+	            _react2.default.createElement(
+	                "h1",
 	                null,
-	                'This is Main.js'
+	                "This is Main.js"
 	            )
 	        );
 	    }
 	});
 
-	module.exports = Main;
+	// let Main = React.createClass({
+
+	//     render: function(){
+	//         return(
+	//             <div className="main-container">
+	//                 <h1>This is Main.js</h1>
+	//             </div>
+	//         )
+	//     }
+	// });
+
+	// module.exports = Main;
 
 /***/ }
 /******/ ]);

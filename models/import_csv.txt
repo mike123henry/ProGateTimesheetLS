@@ -1,0 +1,1 @@
+mongoimport -d pgstsls -c Payperiods --type csv --file payperiod.csv --headerline
