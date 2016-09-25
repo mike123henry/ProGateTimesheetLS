@@ -27139,9 +27139,72 @@
 	            "div",
 	            { className: "main-container" },
 	            _react2.default.createElement(
-	                "h1",
-	                null,
-	                "This is Main.js"
+	                "div",
+	                { className: "container" },
+	                _react2.default.createElement(
+	                    "nav",
+	                    { className: "navbar navbar-default", role: "navigation" },
+	                    _react2.default.createElement(
+	                        "div",
+	                        { className: "container-fluid" },
+	                        _react2.default.createElement(
+	                            "div",
+	                            { className: "navbar-header" },
+	                            _react2.default.createElement(
+	                                "button",
+	                                { type: "button", className: "navbar-toggle", "data-toggle": "collapse", "data-target": ".navbar-ex1-collapse" },
+	                                _react2.default.createElement(
+	                                    "span",
+	                                    { className: "sr-only" },
+	                                    "Toggler Navigaton"
+	                                ),
+	                                _react2.default.createElement("span", { className: "icon-bar" }),
+	                                _react2.default.createElement("span", { className: "icon-bar" }),
+	                                _react2.default.createElement("span", { className: "icon-bar" })
+	                            ),
+	                            _react2.default.createElement(
+	                                "a",
+	                                { className: "nav-brand", href: "#" },
+	                                "PGS TimeSheet"
+	                            )
+	                        ),
+	                        _react2.default.createElement(
+	                            "div",
+	                            { className: "collapse navbar-collapse navbar-ex1-collapse" },
+	                            _react2.default.createElement(
+	                                "ul",
+	                                { className: "nav navbar-nar navbar-right" },
+	                                _react2.default.createElement(
+	                                    "li",
+	                                    null,
+	                                    _react2.default.createElement(
+	                                        "a",
+	                                        { href: "/api/getEmpColl" },
+	                                        "/api/getEmpColl"
+	                                    )
+	                                ),
+	                                _react2.default.createElement(
+	                                    "li",
+	                                    null,
+	                                    _react2.default.createElement(
+	                                        "a",
+	                                        { href: "/api/getEmpColl" },
+	                                        "/api/getEmpColl"
+	                                    )
+	                                ),
+	                                _react2.default.createElement(
+	                                    "li",
+	                                    null,
+	                                    _react2.default.createElement(
+	                                        "a",
+	                                        { href: "/api/getEmpColl" },
+	                                        "/api/getEmpColl"
+	                                    )
+	                                )
+	                            )
+	                        )
+	                    )
+	                )
 	            )
 	        );
 	    }
