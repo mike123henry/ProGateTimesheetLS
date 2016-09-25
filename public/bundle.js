@@ -27120,6 +27120,37 @@
 /* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _NavBar = __webpack_require__(237);
+
+	var _NavBar2 = _interopRequireDefault(_NavBar);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _react2.default.createClass({
+	    displayName: 'Main',
+	    render: function render() {
+	        return _react2.default.createElement(
+	            'div',
+	            { className: 'main-container' },
+	            _react2.default.createElement(_NavBar2.default, null)
+	        );
+	    }
+	});
+
+/***/ },
+/* 237 */
+/***/ function(module, exports, __webpack_require__) {
+
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
@@ -27133,73 +27164,97 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.default = _react2.default.createClass({
-	    displayName: "Main",
+	    displayName: "NavBar",
+
+	    getInitialState: function getInitialState() {
+	        return { isLoggedIn: false };
+	    },
+
 	    render: function render() {
+	        var something = void 0;
+	        if (this.state.isLoggedIn) {
+	            something = _react2.default.createElement(
+	                "li",
+	                null,
+	                _react2.default.createElement(
+	                    "a",
+	                    { href: "/api/getEmpColl" },
+	                    "logged in"
+	                )
+	            );
+	        } else {
+	            something = _react2.default.createElement(
+	                "li",
+	                null,
+	                _react2.default.createElement(
+	                    "a",
+	                    { href: "/api/getEmpColl" },
+	                    "not logged in"
+	                )
+	            );
+	        }
 	        return _react2.default.createElement(
 	            "div",
-	            { className: "main-container" },
+	            { className: "container" },
 	            _react2.default.createElement(
-	                "div",
-	                { className: "container" },
+	                "nav",
+	                { className: "navbar navbar-default", role: "navigation" },
 	                _react2.default.createElement(
-	                    "nav",
-	                    { className: "navbar navbar-default", role: "navigation" },
+	                    "div",
+	                    { className: "container-fluid" },
 	                    _react2.default.createElement(
 	                        "div",
-	                        { className: "container-fluid" },
+	                        { className: "navbar-header" },
 	                        _react2.default.createElement(
-	                            "div",
-	                            { className: "navbar-header" },
+	                            "button",
+	                            { type: "button", className: "navbar-toggle", "data-toggle": "collapse", "data-target": ".navbar-ex1-collapse" },
 	                            _react2.default.createElement(
-	                                "button",
-	                                { type: "button", className: "navbar-toggle", "data-toggle": "collapse", "data-target": ".navbar-ex1-collapse" },
-	                                _react2.default.createElement(
-	                                    "span",
-	                                    { className: "sr-only" },
-	                                    "Toggler Navigaton"
-	                                ),
-	                                _react2.default.createElement("span", { className: "icon-bar" }),
-	                                _react2.default.createElement("span", { className: "icon-bar" }),
-	                                _react2.default.createElement("span", { className: "icon-bar" })
+	                                "span",
+	                                { className: "sr-only" },
+	                                "Toggler Navigaton"
 	                            ),
-	                            _react2.default.createElement(
-	                                "a",
-	                                { className: "nav-brand", href: "#" },
-	                                "PGS TimeSheet"
-	                            )
+	                            _react2.default.createElement("span", { className: "icon-bar" }),
+	                            _react2.default.createElement("span", { className: "icon-bar" }),
+	                            _react2.default.createElement("span", { className: "icon-bar" })
 	                        ),
 	                        _react2.default.createElement(
-	                            "div",
-	                            { className: "collapse navbar-collapse navbar-ex1-collapse" },
+	                            "a",
+	                            { className: "nav-brand", href: "#" },
+	                            "PGS TimeSheet"
+	                        )
+	                    ),
+	                    _react2.default.createElement(
+	                        "div",
+	                        { className: "collapse navbar-collapse navbar-ex1-collapse" },
+	                        _react2.default.createElement(
+	                            "ul",
+	                            { className: "nav navbar-nar navbar-right" },
+	                            something,
 	                            _react2.default.createElement(
-	                                "ul",
-	                                { className: "nav navbar-nar navbar-right" },
+	                                "li",
+	                                null,
 	                                _react2.default.createElement(
-	                                    "li",
-	                                    null,
-	                                    _react2.default.createElement(
-	                                        "a",
-	                                        { href: "/api/getEmpColl" },
-	                                        "/api/getEmpColl"
-	                                    )
-	                                ),
+	                                    "a",
+	                                    { href: "/api/getEmpColl" },
+	                                    "/api/getEmpColl"
+	                                )
+	                            ),
+	                            _react2.default.createElement(
+	                                "li",
+	                                null,
 	                                _react2.default.createElement(
-	                                    "li",
-	                                    null,
-	                                    _react2.default.createElement(
-	                                        "a",
-	                                        { href: "/api/getEmpColl" },
-	                                        "/api/getEmpColl"
-	                                    )
-	                                ),
+	                                    "a",
+	                                    { href: "/api/getEmpColl" },
+	                                    "/api/getEmpColl"
+	                                )
+	                            ),
+	                            _react2.default.createElement(
+	                                "li",
+	                                null,
 	                                _react2.default.createElement(
-	                                    "li",
-	                                    null,
-	                                    _react2.default.createElement(
-	                                        "a",
-	                                        { href: "/api/getEmpColl" },
-	                                        "/api/getEmpColl"
-	                                    )
+	                                    "a",
+	                                    { href: "/api/getEmpColl" },
+	                                    "/api/getEmpColl"
 	                                )
 	                            )
 	                        )
@@ -27209,19 +27264,6 @@
 	        );
 	    }
 	});
-
-	// let Main = React.createClass({
-
-	//     render: function(){
-	//         return(
-	//             <div className="main-container">
-	//                 <h1>This is Main.js</h1>
-	//             </div>
-	//         )
-	//     }
-	// });
-
-	// module.exports = Main;
 
 /***/ }
 /******/ ]);
