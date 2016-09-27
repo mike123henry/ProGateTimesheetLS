@@ -37,10 +37,16 @@ export default React.createClass({
             this.setState({
                 day: timeStamp.getDayOfWeek(),
                 hour: timeStamp.getHour(),
-                minutes: timeStamp.getMin(),
                 month: timeStamp.getMonth(),
                 date: timeStamp.getDayOfMonth()
             })
+            var temp
+            if ((temp = timeStamp.getMin()) < 10){
+                temp    = "0"+ temp
+                this.setState({ minutes: temp})
+            } else {
+                this.setState({ minutes: temp})
+            }
         }
     },
 

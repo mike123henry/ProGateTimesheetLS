@@ -27204,10 +27204,16 @@
 	            this.setState({
 	                day: _timeStamp2.default.getDayOfWeek(),
 	                hour: _timeStamp2.default.getHour(),
-	                minutes: _timeStamp2.default.getMin(),
 	                month: _timeStamp2.default.getMonth(),
 	                date: _timeStamp2.default.getDayOfMonth()
 	            });
+	            var temp;
+	            if ((temp = _timeStamp2.default.getMin()) < 10) {
+	                temp = "0" + temp;
+	                this.setState({ minutes: temp });
+	            } else {
+	                this.setState({ minutes: temp });
+	            }
 	        }
 	    },
 
