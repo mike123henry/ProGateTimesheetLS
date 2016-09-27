@@ -27163,6 +27163,10 @@
 
 	var _reactBootstrap = __webpack_require__(238);
 
+	var _timeStamp = __webpack_require__(489);
+
+	var _timeStamp2 = _interopRequireDefault(_timeStamp);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.default = _react2.default.createClass({
@@ -27175,9 +27179,10 @@
 	            geolat: 0,
 	            geolng: 0,
 	            day: 0,
-	            month: 0,
 	            hour: 0,
-	            minute: 0
+	            minutes: 0,
+	            month: 0,
+	            date: 0
 	        };
 	    },
 
@@ -27188,36 +27193,21 @@
 	            this.setState({ isLoggedIn: true });
 	        }
 	    },
-
+	    handleSignIn: function handleSignIn() {},
 	    handleLocation: function handleLocation() {
-	        // if (!navigator.geolocation){
-	        //     this.state({geolocation: false})
-	        // } else {
-	        //      navigator.geolocation.getCurrentPosition(function(position) {
-	        //         console.log("yes ")
-	        //         this.setState({
-	        //             geolocation: true,
-	        //             geolat: position.coords.latitude,
-	        //             geolng: position.coords.longitude
-	        //         })
-	        //     })
-	        // }
 	        if (!this.state.geoocation) {
 	            this.setState({
 	                geolocation: true,
 	                geolat: 30.25,
 	                geolng: -97.31
 	            });
-	            var datetime = new Date();
-	            var theday = datetime.getDay();
-	            switch (theday) {
-	                case 1:
-	                    this.setState({ day: "Mon" });
-	                    break;
-	                case 2:
-	                    this.setState({ day: "Tues" });
-	                    break;
-	            }
+	            this.setState({
+	                day: _timeStamp2.default.getDayOfWeek(),
+	                hour: _timeStamp2.default.getHour(),
+	                minutes: _timeStamp2.default.getMin(),
+	                month: _timeStamp2.default.getMonth(),
+	                date: _timeStamp2.default.getDayOfMonth()
+	            });
 	        }
 	    },
 
@@ -27252,7 +27242,7 @@
 	            );
 	            signInFlag = _react2.default.createElement(
 	                _reactBootstrap.Button,
-	                { bsSize: 'small', bsStyle: 'info', type: 'submit' },
+	                { bsSize: 'small', bsStyle: 'info', type: 'submit', onClick: this.handleSignIn },
 	                'Sign Up'
 	            );
 	        }
@@ -27270,8 +27260,16 @@
 	            time = _react2.default.createElement(
 	                'p',
 	                null,
-	                'day = ',
-	                this.state.day
+	                'TimeStamp = ',
+	                this.state.day,
+	                ' ',
+	                this.state.month,
+	                ' ',
+	                this.state.date,
+	                ' at ',
+	                this.state.hour,
+	                ' : ',
+	                this.state.minutes
 	            );
 	        } else {
 	            geoFlag = _react2.default.createElement(
@@ -46017,6 +46015,98 @@
 	exports.bootstrapUtils = _bootstrapUtils;
 	exports.createChainedFunction = _createChainedFunction3['default'];
 	exports.ValidComponentChildren = _ValidComponentChildren3['default'];
+
+/***/ },
+/* 489 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	var day = "someday";
+	var hour = -1;
+	var month = "somemonth";
+
+	var timestamp = {
+	    datetime: new Date(),
+	    getDayOfWeek: function getDayOfWeek() {
+	        switch (this.datetime.getDay()) {
+	            case 1:
+	                day = "Mon";
+	                break;
+	            case 2:
+	                day = "Tues";
+	                break;
+	            case 3:
+	                day = "Wed";
+	                break;
+	            case 4:
+	                day = "Thur";
+	                break;
+	            case 5:
+	                day = "Fri";
+	                break;
+	            case 6:
+	                day = "Sat";
+	                break;
+	            case 7:
+	                day = "Sun";
+	                break;
+	        }
+	        return day;
+	    },
+	    getHour: function getHour() {
+	        return this.datetime.getHours();
+	    },
+	    getMin: function getMin() {
+	        return this.datetime.getMinutes();
+	    },
+	    getDayOfMonth: function getDayOfMonth() {
+	        return this.datetime.getDate();
+	    },
+	    getMonth: function getMonth() {
+	        switch (this.datetime.getMonth()) {
+	            case 1:
+	                month = "Jan";
+	                break;
+	            case 2:
+	                month = "Feb";
+	                break;
+	            case 3:
+	                month = "Mar";
+	                break;
+	            case 4:
+	                month = "Apr";
+	                break;
+	            case 5:
+	                month = "May";
+	                break;
+	            case 6:
+	                month = "Jun";
+	                break;
+	            case 7:
+	                month = "Jul";
+	                break;
+	            case 8:
+	                month = "Aug";
+	                break;
+	            case 8:
+	                month = "Sept";
+	                break;
+	            case 10:
+	                month = "Oct";
+	                break;
+	            case 11:
+	                month = "Nov";
+	                break;
+	            case 12:
+	                month = "Dec";
+	                break;
+	        }
+	        return month;
+	    }
+	};
+
+	module.exports = timestamp;
 
 /***/ }
 /******/ ]);

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Navbar, Nav, NavItem, Input, Button, ButtonToolbar } from 'react-bootstrap'
+import timeStamp from '../utils/timeStamp.js'
 
 export default React.createClass({
     getInitialState: function(){
@@ -9,9 +10,10 @@ export default React.createClass({
             geolat: 0,
             geolng: 0,
             day: 0,
-            month: 0,
             hour: 0,
-            minute: 0
+            minutes: 0,
+            month: 0,
+            date: 0
         }
     },
 
@@ -22,37 +24,23 @@ export default React.createClass({
             this.setState({isLoggedIn: true})
         }
     },
+    handleSignIn: function(){
 
+    },
     handleLocation: function(){
-        // if (!navigator.geolocation){
-        //     this.state({geolocation: false})
-        // } else {
-        //      navigator.geolocation.getCurrentPosition(function(position) {
-        //         console.log("yes ")
-        //         this.setState({
-        //             geolocation: true,
-        //             geolat: position.coords.latitude,
-        //             geolng: position.coords.longitude
-        //         })
-        //     })
-        // }
         if(!this.state.geoocation){
             this.setState({
                 geolocation: true,
                 geolat: 30.25,
                 geolng: -97.31
             })
-            var datetime = new Date();
-            var theday = datetime.getDay()
-            switch (theday){
-                case 1:
-                    this.setState({day: "Mon"})
-                    break
-                case 2:
-                    this.setState({day: "Tues"})
-                    break
-            }
-
+            this.setState({
+                day: timeStamp.getDayOfWeek(),
+                hour: timeStamp.getHour(),
+                minutes: timeStamp.getMin(),
+                month: timeStamp.getMonth(),
+                date: timeStamp.getDayOfMonth()
+            })
         }
     },
 
@@ -70,12 +58,12 @@ export default React.createClass({
             locationFlag =  ( <Button bsSize="small" bsStyle="success" type="submit"  onClick={this.handleLocation} >Location</Button>)
         } else{
             loginFlag = ( <Button bsSize="small" bsStyle="success" type="submit" onClick={this.handleLogin} >Log In</Button>)
-            signInFlag = ( <Button bsSize="small" bsStyle="info" type="submit" >Sign Up</Button>)
+            signInFlag = ( <Button bsSize="small" bsStyle="info" type="submit" onClick={this.handleSignIn}>Sign Up</Button>)
         }
         if(this.state.geolocation){
             geoLatLng = (<p>latitude = {this.state.geolat} and longitude = {this.state.geolng} </p>)
             geoFlag = (<p></p>)
-            time = (<p>day = {this.state.day}</p>)
+            time = (<p>TimeStamp = {this.state.day} {this.state.month} {this.state.date} at {this.state.hour} : {this.state.minutes}</p>)
         } else {
             geoFlag = (<p>GeoLocation Service not available</p>)
         }

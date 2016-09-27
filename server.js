@@ -1,14 +1,18 @@
 'use strict';
+//setup dependencies
+const express = require('express');
+const mongoose = require('mongoose');
+const path = require('path');
+
+//import files
+var Employees = require('./models/employees.js');
 
 //setup express
-const express = require('express');
 let app = express();
 app.set('port', (process.env.PORT || 3003));
 app.use(express.static('./public'));
 
 //setup mongo / mongoose
-const mongoose = require('mongoose');
-var Employees = require('./models/employees.js');
 var uri = process.env.MONGODB_URI || 'mongodb://localhost/pgstsls';
 mongoose.connect(uri);
 var db = mongoose.connection;
@@ -20,7 +24,7 @@ db.once('open', function() {
     console.log('Mongoose connection successful.');
 });
 
-const path = require('path');
+
 
 //Main route, redirect to the react portion of the app (because of the bundle.js file)
 app.get('/', (request, response) =>{
