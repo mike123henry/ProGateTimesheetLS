@@ -12,6 +12,8 @@ var handleLocation = function(){
                 console.log("3")
                 console.log(position.coords)
                 })
+             var datetime = new Date();
+             console.log(datetime);
             }
         }
 

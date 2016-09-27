@@ -7,7 +7,11 @@ export default React.createClass({
             isLoggedIn: false,
             geolocation: false,
             geolat: 0,
-            geolng: 0
+            geolng: 0,
+            day: 0,
+            month: 0,
+            hour: 0,
+            minute: 0
         }
     },
 
@@ -38,12 +42,23 @@ export default React.createClass({
                 geolat: 30.25,
                 geolng: -97.31
             })
+            var datetime = new Date();
+            var theday = datetime.getDay()
+            switch (theday){
+                case 1:
+                    this.setState({day: "Mon"})
+                    break
+                case 2:
+                    this.setState({day: "Tues"})
+                    break
+            }
+
         }
     },
 
 
     render(){
-        let loginFlag, signInFlag,geoFlag,geoLatLng,locationFlag;
+        let loginFlag, signInFlag,geoFlag,geoLatLng,locationFlag,time;
         let floatRRight = {
             float: 'right',
             margin: 10
@@ -60,6 +75,7 @@ export default React.createClass({
         if(this.state.geolocation){
             geoLatLng = (<p>latitude = {this.state.geolat} and longitude = {this.state.geolng} </p>)
             geoFlag = (<p></p>)
+            time = (<p>day = {this.state.day}</p>)
         } else {
             geoFlag = (<p>GeoLocation Service not available</p>)
         }
@@ -80,6 +96,7 @@ export default React.createClass({
                 </Navbar>
                     {geoFlag}
                     {geoLatLng}
+                    {time}
                   <Button type="submit">Submit</Button>
                 {/*add page title*/}
             </div>

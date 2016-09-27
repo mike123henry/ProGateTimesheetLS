@@ -27173,7 +27173,11 @@
 	            isLoggedIn: false,
 	            geolocation: false,
 	            geolat: 0,
-	            geolng: 0
+	            geolng: 0,
+	            day: 0,
+	            month: 0,
+	            hour: 0,
+	            minute: 0
 	        };
 	    },
 
@@ -27204,6 +27208,16 @@
 	                geolat: 30.25,
 	                geolng: -97.31
 	            });
+	            var datetime = new Date();
+	            var theday = datetime.getDay();
+	            switch (theday) {
+	                case 1:
+	                    this.setState({ day: "Mon" });
+	                    break;
+	                case 2:
+	                    this.setState({ day: "Tues" });
+	                    break;
+	            }
 	        }
 	    },
 
@@ -27212,7 +27226,8 @@
 	            signInFlag = void 0,
 	            geoFlag = void 0,
 	            geoLatLng = void 0,
-	            locationFlag = void 0;
+	            locationFlag = void 0,
+	            time = void 0;
 	        var floatRRight = {
 	            float: 'right',
 	            margin: 10
@@ -27252,6 +27267,12 @@
 	                ' '
 	            );
 	            geoFlag = _react2.default.createElement('p', null);
+	            time = _react2.default.createElement(
+	                'p',
+	                null,
+	                'day = ',
+	                this.state.day
+	            );
 	        } else {
 	            geoFlag = _react2.default.createElement(
 	                'p',
@@ -27288,6 +27309,7 @@
 	            ),
 	            geoFlag,
 	            geoLatLng,
+	            time,
 	            _react2.default.createElement(
 	                _reactBootstrap.Button,
 	                { type: 'submit' },
