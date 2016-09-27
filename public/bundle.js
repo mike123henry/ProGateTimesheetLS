@@ -27169,7 +27169,12 @@
 	    displayName: 'NavBar',
 
 	    getInitialState: function getInitialState() {
-	        return { isLoggedIn: false };
+	        return {
+	            isLoggedIn: false,
+	            geolocation: false,
+	            geolat: 0,
+	            geolng: 0
+	        };
 	    },
 
 	    handleLogin: function handleLogin() {
@@ -27180,9 +27185,34 @@
 	        }
 	    },
 
+	    handleLocation: function handleLocation() {
+	        // if (!navigator.geolocation){
+	        //     this.state({geolocation: false})
+	        // } else {
+	        //      navigator.geolocation.getCurrentPosition(function(position) {
+	        //         console.log("yes ")
+	        //         this.setState({
+	        //             geolocation: true,
+	        //             geolat: position.coords.latitude,
+	        //             geolng: position.coords.longitude
+	        //         })
+	        //     })
+	        // }
+	        if (!this.state.geoocation) {
+	            this.setState({
+	                geolocation: true,
+	                geolat: 30.25,
+	                geolng: -97.31
+	            });
+	        }
+	    },
+
 	    render: function render() {
 	        var loginFlag = void 0,
-	            signInFlag = void 0;
+	            signInFlag = void 0,
+	            geoFlag = void 0,
+	            geoLatLng = void 0,
+	            locationFlag = void 0;
 	        var floatRRight = {
 	            float: 'right',
 	            margin: 10
@@ -27194,6 +27224,11 @@
 	                { bsSize: 'small', bsStyle: 'danger', type: 'submit', onClick: this.handleLogin },
 	                'Log Out'
 	            );
+	            locationFlag = _react2.default.createElement(
+	                _reactBootstrap.Button,
+	                { bsSize: 'small', bsStyle: 'success', type: 'submit', onClick: this.handleLocation },
+	                'Location'
+	            );
 	        } else {
 	            loginFlag = _react2.default.createElement(
 	                _reactBootstrap.Button,
@@ -27204,6 +27239,24 @@
 	                _reactBootstrap.Button,
 	                { bsSize: 'small', bsStyle: 'info', type: 'submit' },
 	                'Sign Up'
+	            );
+	        }
+	        if (this.state.geolocation) {
+	            geoLatLng = _react2.default.createElement(
+	                'p',
+	                null,
+	                'latitude = ',
+	                this.state.geolat,
+	                ' and longitude = ',
+	                this.state.geolng,
+	                ' '
+	            );
+	            geoFlag = _react2.default.createElement('p', null);
+	        } else {
+	            geoFlag = _react2.default.createElement(
+	                'p',
+	                null,
+	                'GeoLocation Service not available'
 	            );
 	        }
 	        return _react2.default.createElement(
@@ -27228,10 +27281,13 @@
 	                        _reactBootstrap.ButtonToolbar,
 	                        { style: floatRRight },
 	                        loginFlag,
-	                        signInFlag
+	                        signInFlag,
+	                        locationFlag
 	                    )
 	                )
 	            ),
+	            geoFlag,
+	            geoLatLng,
 	            _react2.default.createElement(
 	                _reactBootstrap.Button,
 	                { type: 'submit' },
