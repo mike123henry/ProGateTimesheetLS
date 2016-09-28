@@ -1,6 +1,8 @@
 import React from 'react';
 import { Navbar, Nav, NavItem, Input, Button, ButtonToolbar } from 'react-bootstrap'
 import timeStamp from '../utils/timeStamp.js'
+var geoStuff = require("./../../geostuff.js");
+var noPromiseGeoStuff = require("./../../aaageostuff.js")
 
 export default React.createClass({
     getInitialState: function(){
@@ -28,13 +30,34 @@ export default React.createClass({
 
     },
     handleLocation: function(){
-        if(!this.state.geoocation){
-            this.setState({
+        var that = this;
+        geoStuff().then(function(position){
+            console.log("this is my position", position);
+            that.setState({
                 geolocation: true,
-                geolat: 30.25,
-                geolng: -97.31
+                geolat: position.latitude,
+                geolng: position.longitude
             })
-            this.setState({
+        }).catch(function(err){
+            //display err
+        });
+
+        // noPromiseGeoStuff(function(position, err){
+        //     console.log("this is my position", position);
+        //     if(err) {
+        //         return "blah"
+        //         console.log("i errored")
+        //     }
+        //     that.setState({
+        //         geolocation: true,
+        //         geolat: position.latitude,
+        //         geolng: position.longitude
+        //     })
+        // });
+      this.handleTimeStamp()
+    },
+    handleTimeStamp: function(){
+        this.setState({
                 day: timeStamp.getDayOfWeek(),
                 hour: timeStamp.getHour(),
                 month: timeStamp.getMonth(),
@@ -47,9 +70,7 @@ export default React.createClass({
             } else {
                 this.setState({ minutes: temp})
             }
-        }
     },
-
 
     render(){
         let loginFlag, signInFlag,geoFlag,geoLatLng,locationFlag,time;

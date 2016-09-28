@@ -27169,6 +27169,9 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var geoStuff = __webpack_require__(491);
+	var noPromiseGeoStuff = __webpack_require__(492);
+
 	exports.default = _react2.default.createClass({
 	    displayName: 'NavBar',
 
@@ -27195,25 +27198,45 @@
 	    },
 	    handleSignIn: function handleSignIn() {},
 	    handleLocation: function handleLocation() {
-	        if (!this.state.geoocation) {
-	            this.setState({
+	        var that = this;
+	        geoStuff().then(function (position) {
+	            console.log("this is my position", position);
+	            that.setState({
 	                geolocation: true,
-	                geolat: 30.25,
-	                geolng: -97.31
+	                geolat: position.latitude,
+	                geolng: position.longitude
 	            });
-	            this.setState({
-	                day: _timeStamp2.default.getDayOfWeek(),
-	                hour: _timeStamp2.default.getHour(),
-	                month: _timeStamp2.default.getMonth(),
-	                date: _timeStamp2.default.getDayOfMonth()
-	            });
-	            var temp;
-	            if ((temp = _timeStamp2.default.getMin()) < 10) {
-	                temp = "0" + temp;
-	                this.setState({ minutes: temp });
-	            } else {
-	                this.setState({ minutes: temp });
-	            }
+	        }).catch(function (err) {
+	            //display err
+	        });
+
+	        // noPromiseGeoStuff(function(position, err){
+	        //     console.log("this is my position", position);
+	        //     if(err) {
+	        //         return "blah"
+	        //         console.log("i errored")
+	        //     }
+	        //     that.setState({
+	        //         geolocation: true,
+	        //         geolat: position.latitude,
+	        //         geolng: position.longitude
+	        //     })
+	        // });
+	        this.handleTimeStamp();
+	    },
+	    handleTimeStamp: function handleTimeStamp() {
+	        this.setState({
+	            day: _timeStamp2.default.getDayOfWeek(),
+	            hour: _timeStamp2.default.getHour(),
+	            month: _timeStamp2.default.getMonth(),
+	            date: _timeStamp2.default.getDayOfMonth()
+	        });
+	        var temp;
+	        if ((temp = _timeStamp2.default.getMin()) < 10) {
+	            temp = "0" + temp;
+	            this.setState({ minutes: temp });
+	        } else {
+	            this.setState({ minutes: temp });
 	        }
 	    },
 
@@ -46113,6 +46136,63 @@
 	};
 
 	module.exports = timestamp;
+
+/***/ },
+/* 490 */,
+/* 491 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	var options = {
+	  enableHighAccuracy: false,
+	  timeout: 5000,
+	  maximumAge: 0
+	};
+
+	module.exports = function () {
+
+	  return new Promise(function (resolve, reject) {
+	    navigator.geolocation.getCurrentPosition(success, error, options);
+
+	    function success(pos) {
+	      var crd = pos.coords;
+	      resolve(crd);
+	    };
+
+	    function error(err) {
+	      console.warn('ERROR(' + err.code + '): ' + err.message);
+	      reject(err);
+	    };
+	  });
+	};
+
+/***/ },
+/* 492 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	var options = {
+	        enableHighAccuracy: false,
+	        timeout: 5000,
+	        maximumAge: 0
+	};
+
+	module.exports = function (callback) {
+
+	        navigator.geolocation.getCurrentPosition(success, error, options);
+
+	        function success(pos) {
+	                var crd = pos.coords;
+	                callback(crd);
+	        };
+
+	        function error(err) {
+	                console.warn('ERROR(' + err.code + '): ' + err.message);
+	                callback(null, err);
+	        };
+	};
 
 /***/ }
 /******/ ]);
