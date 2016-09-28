@@ -27169,8 +27169,8 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var geoStuff = __webpack_require__(491);
-	var noPromiseGeoStuff = __webpack_require__(492);
+	var geoStuff = __webpack_require__(490);
+	var noPromiseGeoStuff = __webpack_require__(491);
 
 	exports.default = _react2.default.createClass({
 	    displayName: 'NavBar',
@@ -46138,8 +46138,7 @@
 	module.exports = timestamp;
 
 /***/ },
-/* 490 */,
-/* 491 */
+/* 490 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -46168,7 +46167,7 @@
 	};
 
 /***/ },
-/* 492 */
+/* 491 */
 /***/ function(module, exports) {
 
 	'use strict';
