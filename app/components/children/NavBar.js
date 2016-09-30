@@ -1,9 +1,14 @@
 import React from 'react';
 import { Navbar, Nav, NavItem, Input, Button, ButtonToolbar } from 'react-bootstrap'
-import timeStamp from '../utils/timeStamp.js'
-var geoStuff = require("./../../geostuff.js");
-var noPromiseGeoStuff = require("./../../aaageostuff.js")
 
+import timeStamp from '../utils/timeStamp.js'
+import geoStuff from "../utils/geoStuff.js";
+import helpers from "../utils/helpers.js";
+
+let floatRRight = {
+    float: 'right',
+    margin: 10
+    }
 export default React.createClass({
     getInitialState: function(){
         return {
@@ -15,7 +20,9 @@ export default React.createClass({
             hour: 0,
             minutes: 0,
             month: 0,
-            date: 0
+            date: 0,
+            employeename: "x",
+            employeeloginid: ""
         }
     },
 
@@ -26,21 +33,28 @@ export default React.createClass({
             this.setState({isLoggedIn: true})
         }
     },
-    handleSignIn: function(){
+    handleSignUp: function(){
+        console.log("NavBar handleSignUp 1")
+        this.setState({
+            employeename: "Fred",
+            employeeloginid: "Fred0003"
+        });
 
     },
     handleLocation: function(){
+        //set that = to this because the scope of this will change when geoStuff() is called
         var that = this;
-        geoStuff().then(function(position){
-            console.log("this is my position", position);
-            that.setState({
-                geolocation: true,
-                geolat: position.latitude,
-                geolng: position.longitude
+        geoStuff()
+            .then(function(position){
+                that.setState({
+                    geolocation: true,
+                    geolat: position.latitude,
+                    geolng: position.longitude
+                })
             })
-        }).catch(function(err){
-            //display err
-        });
+            .catch(function(err){
+                //display err
+            });
 
         // noPromiseGeoStuff(function(position, err){
         //     console.log("this is my position", position);
@@ -54,9 +68,11 @@ export default React.createClass({
         //         geolng: position.longitude
         //     })
         // });
+        console.log("hts")
       this.handleTimeStamp()
     },
     handleTimeStamp: function(){
+        console.log("TS")
         this.setState({
                 day: timeStamp.getDayOfWeek(),
                 hour: timeStamp.getHour(),
@@ -71,13 +87,18 @@ export default React.createClass({
                 this.setState({ minutes: temp})
             }
     },
+    componentWillUpdate: function(nextProps, nextState){
+        var signUpData = {
+            employeename: nextState.employeename,
+            employeeloginid: nextState.employeeloginid
+        };
+        //var signUpData = {employeename: "george", employeeloginid: "georg0004"}
+        console.log("signUpData", signUpData)
+        helpers.saveNewEmployee(signUpData);
+    },
+    render: function(){
+        let loginFlag, signUpFlag,geoFlag,geoLatLng,locationFlag,time;
 
-    render(){
-        let loginFlag, signInFlag,geoFlag,geoLatLng,locationFlag,time;
-        let floatRRight = {
-            float: 'right',
-            margin: 10
-            }
 
 
         if(this.state.isLoggedIn){
@@ -85,7 +106,7 @@ export default React.createClass({
             locationFlag =  ( <Button bsSize="small" bsStyle="success" type="submit"  onClick={this.handleLocation} >Location</Button>)
         } else{
             loginFlag = ( <Button bsSize="small" bsStyle="success" type="submit" onClick={this.handleLogin} >Log In</Button>)
-            signInFlag = ( <Button bsSize="small" bsStyle="info" type="submit" onClick={this.handleSignIn}>Sign Up</Button>)
+            signUpFlag = ( <Button bsSize="small" bsStyle="info" type="submit" onClick={this.handleSignUp}>Sign Up</Button>)
         }
         if(this.state.geolocation){
             geoLatLng = (<p>latitude = {this.state.geolat} and longitude = {this.state.geolng} </p>)
@@ -104,7 +125,7 @@ export default React.createClass({
                         </Navbar.Brand>
                         <ButtonToolbar style={floatRRight}>
                               {loginFlag}
-                              {signInFlag}
+                              {signUpFlag}
                               {locationFlag}
                         </ButtonToolbar>
                     </Navbar.Header>
