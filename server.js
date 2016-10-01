@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 
 //import files
 var Employees = require('./models/employees.js');
-
+var ShiftEvents = require('./models/shiftEvents.js')
 
 
 
@@ -16,6 +16,7 @@ let app = express();
 app.set('port', (process.env.PORT || 3003));
 app.use(express.static('./public'));
 app.use(bodyParser.json());
+
 //setup mongo / mongoose
 var uri = process.env.MONGODB_URI || 'mongodb://localhost/pgstsls';
 mongoose.connect(uri);
@@ -35,21 +36,18 @@ app.get('/', (request, response) =>{
     response.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-//use restful//crud!!!!
-//get employees get all employees
-//post employees save one/more new employees
-//put w/id update eemplpyee
-////delete to delete a employee document
+//use restful ~= crud!!!!
+//post employees save one/more new employees    (Crud create)
+//get employees get all employees               (cRud retreive)
+//put w/id update eemplpyee                     (crUd update)
+//delete to delete a employee document          (cruD delete)
 
-//======signUp ==== crud section ==================================
-app.get('/api/getSignUp', function(req, res){
-    console.log('there is not a get for this route');
-});
-
-app.post('/api/getSignUp', function(req,res){
-    console.log('req.body',req.body)
+//======signUp ==== restful ~= crud section ==================================
+//post ~= create
+app.post('/api/employees', function(req,res){
+    console.log('server.js has run post  /api/getSignUp');
+    console.log('req.body',req.body);
     var newEmployee = new Employees(req.body);
-    console.log('req.body',req.body)
 
     newEmployee.save(function(err, doc){
         if(err){
@@ -58,13 +56,45 @@ app.post('/api/getSignUp', function(req,res){
             res.send(doc._id);
         }
     });
-})
 
+});
+
+//get ~= retreive
+app.get('/api/employees', function(req, res){
+    console.log('server.js has run get /api/getSignUp')
+    Employees.find({})
+        .exec(function(err, doc){
+            if(err){
+                console.log('server.js get /api/getSignUp has errored', err);
+            } else {
+                console.log('server.js get /api/getSignUp doc =',doc)
+                res.json(doc);
+            }
+        })
+
+});
+
+//put ~= update
 
 
 //================================================================
+app.post('/api/shifties', function(req,res){
+    console.log('server.js has run post  /api/shifties');
+    console.log('req.body',req.body);
+    var newShiftEvent = new ShiftEvents(req.body);
+    newShiftEvent.save(function(err, doc){
+        if(err){
+            console.log('newShiftEvent.save errored', err)
+        } else {
+            console.log('newShiftEvent.save doc', doc)
+        }
+    });
+
+});
+
+//=========================================================
 app.get('/api/getEmpColl', function(req, res){
-    console.log('server.js has run /api/getEmpColl')
+    console.log('server.js has run get /api/getEmpColl')
     Employees.find({})
         .exec(function(err, doc){
             if(err){

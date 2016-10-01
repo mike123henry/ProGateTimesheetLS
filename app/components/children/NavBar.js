@@ -22,7 +22,8 @@ export default React.createClass({
             month: 0,
             date: 0,
             employeename: "x",
-            employeeloginid: ""
+            employeeloginid: "",
+            isOnShift: false
         }
     },
 
@@ -31,6 +32,9 @@ export default React.createClass({
             this.setState({ isLoggedIn: false})
         } else {
             this.setState({isLoggedIn: true})
+            this.setState({
+                employeename: "Fred"
+            })
         }
     },
     handleSignUp: function(){
@@ -41,7 +45,7 @@ export default React.createClass({
         });
 
     },
-    handleLocation: function(){
+    handleShift: function(){
         //set that = to this because the scope of this will change when geoStuff() is called
         var that = this;
         geoStuff()
@@ -51,9 +55,13 @@ export default React.createClass({
                     geolat: position.latitude,
                     geolng: position.longitude
                 })
+                console.log('b4 isOnShift',that.state.isOnShift);
+                that.setState({isOnShift: !(that.state.isOnShift)})
+                console.log('after isOnShift',that.state.isOnShift);
             })
             .catch(function(err){
                 //display err
+                console.log('geoStuff errored in NavBar.js', err)
             });
 
         // noPromiseGeoStuff(function(position, err){
@@ -68,8 +76,9 @@ export default React.createClass({
         //         geolng: position.longitude
         //     })
         // });
-        console.log("hts")
-      this.handleTimeStamp()
+        //console.log("hts")
+      //this.handleTimeStamp()
+      //this.setState({isOnShift: !(this.isOnShift)})
     },
     handleTimeStamp: function(){
         console.log("TS")
@@ -88,13 +97,25 @@ export default React.createClass({
             }
     },
     componentWillUpdate: function(nextProps, nextState){
-        var signUpData = {
-            employeename: nextState.employeename,
-            employeeloginid: nextState.employeeloginid
-        };
-        //var signUpData = {employeename: "george", employeeloginid: "georg0004"}
-        console.log("signUpData", signUpData)
-        helpers.saveNewEmployee(signUpData);
+        if ( this.state.employeename !== nextState.employeename || this.state.employeeloginid !== nextState.employeeloginid) {
+            var signUpData = {
+                employeename: nextState.employeename,
+                employeeloginid: nextState.employeeloginid
+            };
+            helpers.saveNewEmployee(signUpData);
+            console.log("componentWillUpdate has run signUpData = ", signUpData)
+        } //end if employee has changed
+        if (this.state.isOnShift !== nextState.isOnShift ) {
+            var shiftData = {
+                employeename: nextState.employeename,
+                employeeloginid: nextState.employeeloginid,
+                isOnShift: nextState.isOnShift,
+                geolat: nextState.geolat,
+                geolng: nextState.geolng
+            };
+            helpers.saveNewShift(shiftData);
+            console.log("componentWillUpdate has run shiftData = ", shiftData)
+        } //end if employee has changed
     },
     render: function(){
         let loginFlag, signUpFlag,geoFlag,geoLatLng,locationFlag,time;
@@ -103,10 +124,11 @@ export default React.createClass({
 
         if(this.state.isLoggedIn){
             loginFlag = ( <Button bsSize="small" bsStyle="danger" type="submit"  onClick={this.handleLogin} >Log Out</Button>)
-            locationFlag =  ( <Button bsSize="small" bsStyle="success" type="submit"  onClick={this.handleLocation} >Location</Button>)
+            locationFlag =  ( <Button bsSize="small" bsStyle="success" type="submit"  onClick={this.handleShift} >Start Shift</Button>)
         } else{
             loginFlag = ( <Button bsSize="small" bsStyle="success" type="submit" onClick={this.handleLogin} >Log In</Button>)
             signUpFlag = ( <Button bsSize="small" bsStyle="info" type="submit" onClick={this.handleSignUp}>Sign Up</Button>)
+            locationFlag =  ( <Button bsSize="small" bsStyle="danger" type="submit"  onClick={this.handleShift} >End Shift</Button>)
         }
         if(this.state.geolocation){
             geoLatLng = (<p>latitude = {this.state.geolat} and longitude = {this.state.geolng} </p>)

@@ -27189,7 +27189,8 @@
 	            month: 0,
 	            date: 0,
 	            employeename: "x",
-	            employeeloginid: ""
+	            employeeloginid: "",
+	            isOnShift: false
 	        };
 	    },
 
@@ -27198,6 +27199,9 @@
 	            this.setState({ isLoggedIn: false });
 	        } else {
 	            this.setState({ isLoggedIn: true });
+	            this.setState({
+	                employeename: "Fred"
+	            });
 	        }
 	    },
 	    handleSignUp: function handleSignUp() {
@@ -27207,7 +27211,7 @@
 	            employeeloginid: "Fred0003"
 	        });
 	    },
-	    handleLocation: function handleLocation() {
+	    handleShift: function handleShift() {
 	        //set that = to this because the scope of this will change when geoStuff() is called
 	        var that = this;
 	        (0, _geoStuff2.default)().then(function (position) {
@@ -27216,8 +27220,12 @@
 	                geolat: position.latitude,
 	                geolng: position.longitude
 	            });
+	            console.log('b4 isOnShift', that.state.isOnShift);
+	            that.setState({ isOnShift: !that.state.isOnShift });
+	            console.log('after isOnShift', that.state.isOnShift);
 	        }).catch(function (err) {
 	            //display err
+	            console.log('geoStuff errored in NavBar.js', err);
 	        });
 
 	        // noPromiseGeoStuff(function(position, err){
@@ -27232,8 +27240,9 @@
 	        //         geolng: position.longitude
 	        //     })
 	        // });
-	        console.log("hts");
-	        this.handleTimeStamp();
+	        //console.log("hts")
+	        //this.handleTimeStamp()
+	        //this.setState({isOnShift: !(this.isOnShift)})
 	    },
 	    handleTimeStamp: function handleTimeStamp() {
 	        console.log("TS");
@@ -27252,13 +27261,25 @@
 	        }
 	    },
 	    componentWillUpdate: function componentWillUpdate(nextProps, nextState) {
-	        var signUpData = {
-	            employeename: nextState.employeename,
-	            employeeloginid: nextState.employeeloginid
-	        };
-	        //var signUpData = {employeename: "george", employeeloginid: "georg0004"}
-	        console.log("signUpData", signUpData);
-	        _helpers2.default.saveNewEmployee(signUpData);
+	        if (this.state.employeename !== nextState.employeename || this.state.employeeloginid !== nextState.employeeloginid) {
+	            var signUpData = {
+	                employeename: nextState.employeename,
+	                employeeloginid: nextState.employeeloginid
+	            };
+	            _helpers2.default.saveNewEmployee(signUpData);
+	            console.log("componentWillUpdate has run signUpData = ", signUpData);
+	        } //end if employee has changed
+	        if (this.state.isOnShift !== nextState.isOnShift) {
+	            var shiftData = {
+	                employeename: nextState.employeename,
+	                employeeloginid: nextState.employeeloginid,
+	                isOnShift: nextState.isOnShift,
+	                geolat: nextState.geolat,
+	                geolng: nextState.geolng
+	            };
+	            _helpers2.default.saveNewShift(shiftData);
+	            console.log("componentWillUpdate has run shiftData = ", shiftData);
+	        } //end if employee has changed
 	    },
 	    render: function render() {
 	        var loginFlag = void 0,
@@ -27276,8 +27297,8 @@
 	            );
 	            locationFlag = _react2.default.createElement(
 	                _reactBootstrap.Button,
-	                { bsSize: 'small', bsStyle: 'success', type: 'submit', onClick: this.handleLocation },
-	                'Location'
+	                { bsSize: 'small', bsStyle: 'success', type: 'submit', onClick: this.handleShift },
+	                'Start Shift'
 	            );
 	        } else {
 	            loginFlag = _react2.default.createElement(
@@ -27289,6 +27310,11 @@
 	                _reactBootstrap.Button,
 	                { bsSize: 'small', bsStyle: 'info', type: 'submit', onClick: this.handleSignUp },
 	                'Sign Up'
+	            );
+	            locationFlag = _react2.default.createElement(
+	                _reactBootstrap.Button,
+	                { bsSize: 'small', bsStyle: 'danger', type: 'submit', onClick: this.handleShift },
+	                'End Shift'
 	            );
 	        }
 	        if (this.state.geolocation) {
@@ -46197,7 +46223,14 @@
 	    // This will run our query.
 	    saveNewEmployee: function saveNewEmployee(signUpData) {
 	        console.log("helpers signUpData", signUpData);
-	        return axios.post('/api/getSignUp', signUpData).then(function (results) {
+	        return axios.post('/api/employees', signUpData).then(function (results) {
+	            console.log("axios results", results._id);
+	            return results._id;
+	        });
+	    },
+	    saveNewShift: function saveNewShift(shiftData) {
+	        console.log("helpers saveNewShift", shiftData);
+	        return axios.post('/api/shifties', shiftData).then(function (results) {
 	            console.log("axios results", results._id);
 	            return results._id;
 	        });
