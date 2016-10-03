@@ -21,12 +21,21 @@ export default React.createClass({
             minutes: 0,
             month: 0,
             date: 0,
-            employeename: "x",
+            employeename: "",
             employeeloginid: "",
-            isOnShift: false
+            isOnShift: false,
+            firstName: "",
+            lastName: "",
+            loginFormOpen: false,
+            signUpFormOpen: false
         }
     },
-
+    handleLoginFormOpen: function(){
+        this.setState({loginFormOpen: true})
+    },
+    handleSignUpFormOpen: function(){
+        this.setState({signUpFormOpen: true})
+    },
     handleLogin: function(){
         if (this.state.isLoggedIn){
             this.setState({ isLoggedIn: false})
@@ -39,20 +48,40 @@ export default React.createClass({
         }
         var that = this;
         helpers.getInitialShift({employeename: "Frank"}).then(function(isOnShiftRtn){
-            console.log('isOnShiftRtn.isOnShift = ', isOnShiftRtn.isOnShift)
+            //console.log('isOnShiftRtn.isOnShift = ', isOnShiftRtn.isOnShift)
             that.setState({
                 isOnShift: isOnShiftRtn.isOnShift
             })
         })
 
     },
-    handleSignUp: function(){
-        console.log("NavBar handleSignUp 1")
+    handleSignUp: function(e){
+        //console.log("NavBar handleSignUp 1")
         this.setState({
-            employeename: "Frank",
-            employeeloginid: "Frank0005"
+            firstName: e.target.value
         });
-
+        console.log('this.state.firstName = ',this.state.firstName)
+    },
+    handleFirstName: function(e){
+        //console.log("NavBar handleSignUp 1")
+        this.setState({
+            firstName: e.target.value,
+        });
+        console.log('this.state.firstName = ',this.state.firstName)
+    },
+    handleLastName: function(e){
+        //console.log("NavBar handleSignUp 1")
+        this.setState({
+            lastName: e.target.value
+        });
+        console.log('this.state.firstName = ',this.state.firstName)
+    },
+    submitValue: function(){
+        this.setState({
+            employeename: this.state.firstName +" "+ this.state.lastName,
+            employeeloginid: this.state.lastName + "0006",
+            signUpFormOpen: false
+        })
     },
     handleShift: function(){
         //set that = to this because the scope of this will change when geoStuff() is called
@@ -90,7 +119,7 @@ export default React.createClass({
       //this.setState({isOnShift: !(this.isOnShift)})
     },
     handleTimeStamp: function(){
-        console.log("TS")
+        //console.log("TS")
         this.setState({
                 day: timeStamp.getDayOfWeek(),
                 hour: timeStamp.getHour(),
@@ -112,8 +141,7 @@ export default React.createClass({
                 employeeloginid: nextState.employeeloginid
             };
             helpers.saveNewEmployee(signUpData);
-            console.log("componentWillUpdate has run signUpData = ", signUpData)
-        } //end if employee has changed
+        };
         if (this.state.isOnShift !== nextState.isOnShift ) {
             var shiftData = {
                 employeename: nextState.employeename,
@@ -123,14 +151,24 @@ export default React.createClass({
                 geolng: nextState.geolng
             };
             helpers.saveNewShift(shiftData);
-            console.log("componentWillUpdate has run shiftData = ", shiftData)
-        } //end if employee has changed
+        };
     },
     render: function(){
-        let loginFlag, signUpFlag,geoFlag,geoLatLng,shiftFlag,time;
+        let loginFlag, signUpFlag,geoFlag,geoLatLng,shiftFlag,time,signUpForm;
 
-
-
+        if(this.state.signUpFormOpen){
+            signUpForm = (
+                <div>
+                    <h3> First Name </h3>
+                    <input value={this.state.firstName}  onChange={this.handleFirstName} />
+                    <br />
+                    <h3> Last Name </h3>
+                    <input value={this.state.lastName} onChange={this.handleLastName} />
+                    <br />
+                    <button onClick={this.submitValue}>Submit Name</button>
+                </div>
+            );
+        }
         if(this.state.isLoggedIn ){
             loginFlag = ( <Button bsSize="small" bsStyle="danger" type="submit"  onClick={this.handleLogin} >Log Out</Button>)
             if(this.state.isOnShift){
@@ -139,8 +177,12 @@ export default React.createClass({
                 shiftFlag =  ( <Button bsSize="small" bsStyle="success" type="submit"  onClick={this.handleShift} >Start Shift</Button>)
             }
         } else{
-            loginFlag = ( <Button bsSize="small" bsStyle="success" type="submit" onClick={this.handleLogin} >Log In</Button>)
-            signUpFlag = ( <Button bsSize="small" bsStyle="info" type="submit" onClick={this.handleSignUp}>Sign Up</Button>)
+                if(!this.state.signUpFormOpen && !this.state.loginFormOpen){
+                    loginFlag = ( <Button bsSize="small" bsStyle="success" type="submit" onClick={this.handleLoginFormOpen} >Log In</Button>)
+                    signUpFlag = ( <Button bsSize="small" bsStyle="info" type="submit" onClick={this.handleSignUpFormOpen}>Sign Up</Button>)
+                }
+            //loginFlag = ( <Button bsSize="small" bsStyle="success" type="submit" onClick={this.handleLoginFormOpen} >Log In</Button>)
+            //signUpFlag = ( <Button bsSize="small" bsStyle="info" type="submit" onClick={this.handleSignUpFormOpen}>Sign Up</Button>)
         }
         if(this.state.geolocation){
             geoLatLng = (<p>latitude = {this.state.geolat} and longitude = {this.state.geolng} </p>)
@@ -155,7 +197,7 @@ export default React.createClass({
                 <Navbar>
                     <Navbar.Header>
                         <Navbar.Brand >
-                            <a href="#">Pro Gate</a>
+                            Pro Gate
                         </Navbar.Brand>
                         <ButtonToolbar style={floatRRight}>
                               {loginFlag}
@@ -164,6 +206,7 @@ export default React.createClass({
                         </ButtonToolbar>
                     </Navbar.Header>
                 </Navbar>
+                {signUpForm}
                     {geoFlag}
                     {geoLatLng}
                     {time}

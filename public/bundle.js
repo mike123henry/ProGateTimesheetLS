@@ -27188,12 +27188,21 @@
 	            minutes: 0,
 	            month: 0,
 	            date: 0,
-	            employeename: "x",
+	            employeename: "",
 	            employeeloginid: "",
-	            isOnShift: false
+	            isOnShift: false,
+	            firstName: "",
+	            lastName: "",
+	            loginFormOpen: false,
+	            signUpFormOpen: false
 	        };
 	    },
-
+	    handleLoginFormOpen: function handleLoginFormOpen() {
+	        this.setState({ loginFormOpen: true });
+	    },
+	    handleSignUpFormOpen: function handleSignUpFormOpen() {
+	        this.setState({ signUpFormOpen: true });
+	    },
 	    handleLogin: function handleLogin() {
 	        if (this.state.isLoggedIn) {
 	            this.setState({ isLoggedIn: false });
@@ -27206,17 +27215,38 @@
 	        }
 	        var that = this;
 	        _helpers2.default.getInitialShift({ employeename: "Frank" }).then(function (isOnShiftRtn) {
-	            console.log('isOnShiftRtn.isOnShift = ', isOnShiftRtn.isOnShift);
+	            //console.log('isOnShiftRtn.isOnShift = ', isOnShiftRtn.isOnShift)
 	            that.setState({
 	                isOnShift: isOnShiftRtn.isOnShift
 	            });
 	        });
 	    },
-	    handleSignUp: function handleSignUp() {
-	        console.log("NavBar handleSignUp 1");
+	    handleSignUp: function handleSignUp(e) {
+	        //console.log("NavBar handleSignUp 1")
 	        this.setState({
-	            employeename: "Frank",
-	            employeeloginid: "Frank0005"
+	            firstName: e.target.value
+	        });
+	        console.log('this.state.firstName = ', this.state.firstName);
+	    },
+	    handleFirstName: function handleFirstName(e) {
+	        //console.log("NavBar handleSignUp 1")
+	        this.setState({
+	            firstName: e.target.value
+	        });
+	        console.log('this.state.firstName = ', this.state.firstName);
+	    },
+	    handleLastName: function handleLastName(e) {
+	        //console.log("NavBar handleSignUp 1")
+	        this.setState({
+	            lastName: e.target.value
+	        });
+	        console.log('this.state.firstName = ', this.state.firstName);
+	    },
+	    submitValue: function submitValue() {
+	        this.setState({
+	            employeename: this.state.firstName + " " + this.state.lastName,
+	            employeeloginid: this.state.lastName + "0006",
+	            signUpFormOpen: false
 	        });
 	    },
 	    handleShift: function handleShift() {
@@ -27253,7 +27283,7 @@
 	        //this.setState({isOnShift: !(this.isOnShift)})
 	    },
 	    handleTimeStamp: function handleTimeStamp() {
-	        console.log("TS");
+	        //console.log("TS")
 	        this.setState({
 	            day: _timeStamp2.default.getDayOfWeek(),
 	            hour: _timeStamp2.default.getHour(),
@@ -27275,8 +27305,7 @@
 	                employeeloginid: nextState.employeeloginid
 	            };
 	            _helpers2.default.saveNewEmployee(signUpData);
-	            console.log("componentWillUpdate has run signUpData = ", signUpData);
-	        } //end if employee has changed
+	        };
 	        if (this.state.isOnShift !== nextState.isOnShift) {
 	            var shiftData = {
 	                employeename: nextState.employeename,
@@ -27286,8 +27315,7 @@
 	                geolng: nextState.geolng
 	            };
 	            _helpers2.default.saveNewShift(shiftData);
-	            console.log("componentWillUpdate has run shiftData = ", shiftData);
-	        } //end if employee has changed
+	        };
 	    },
 	    render: function render() {
 	        var loginFlag = void 0,
@@ -27295,8 +27323,34 @@
 	            geoFlag = void 0,
 	            geoLatLng = void 0,
 	            shiftFlag = void 0,
-	            time = void 0;
+	            time = void 0,
+	            signUpForm = void 0;
 
+	        if (this.state.signUpFormOpen) {
+	            signUpForm = _react2.default.createElement(
+	                'div',
+	                null,
+	                _react2.default.createElement(
+	                    'h3',
+	                    null,
+	                    ' First Name '
+	                ),
+	                _react2.default.createElement('input', { value: this.state.firstName, onChange: this.handleFirstName }),
+	                _react2.default.createElement('br', null),
+	                _react2.default.createElement(
+	                    'h3',
+	                    null,
+	                    ' Last Name '
+	                ),
+	                _react2.default.createElement('input', { value: this.state.lastName, onChange: this.handleLastName }),
+	                _react2.default.createElement('br', null),
+	                _react2.default.createElement(
+	                    'button',
+	                    { onClick: this.submitValue },
+	                    'Submit Name'
+	                )
+	            );
+	        }
 	        if (this.state.isLoggedIn) {
 	            loginFlag = _react2.default.createElement(
 	                _reactBootstrap.Button,
@@ -27317,16 +27371,20 @@
 	                );
 	            }
 	        } else {
-	            loginFlag = _react2.default.createElement(
-	                _reactBootstrap.Button,
-	                { bsSize: 'small', bsStyle: 'success', type: 'submit', onClick: this.handleLogin },
-	                'Log In'
-	            );
-	            signUpFlag = _react2.default.createElement(
-	                _reactBootstrap.Button,
-	                { bsSize: 'small', bsStyle: 'info', type: 'submit', onClick: this.handleSignUp },
-	                'Sign Up'
-	            );
+	            if (!this.state.signUpFormOpen && !this.state.loginFormOpen) {
+	                loginFlag = _react2.default.createElement(
+	                    _reactBootstrap.Button,
+	                    { bsSize: 'small', bsStyle: 'success', type: 'submit', onClick: this.handleLoginFormOpen },
+	                    'Log In'
+	                );
+	                signUpFlag = _react2.default.createElement(
+	                    _reactBootstrap.Button,
+	                    { bsSize: 'small', bsStyle: 'info', type: 'submit', onClick: this.handleSignUpFormOpen },
+	                    'Sign Up'
+	                );
+	            }
+	            //loginFlag = ( <Button bsSize="small" bsStyle="success" type="submit" onClick={this.handleLoginFormOpen} >Log In</Button>)
+	            //signUpFlag = ( <Button bsSize="small" bsStyle="info" type="submit" onClick={this.handleSignUpFormOpen}>Sign Up</Button>)
 	        }
 	        if (this.state.geolocation) {
 	            geoLatLng = _react2.default.createElement(
@@ -27372,11 +27430,7 @@
 	                    _react2.default.createElement(
 	                        _reactBootstrap.Navbar.Brand,
 	                        null,
-	                        _react2.default.createElement(
-	                            'a',
-	                            { href: '#' },
-	                            'Pro Gate'
-	                        )
+	                        'Pro Gate'
 	                    ),
 	                    _react2.default.createElement(
 	                        _reactBootstrap.ButtonToolbar,
@@ -27387,6 +27441,7 @@
 	                    )
 	                )
 	            ),
+	            signUpForm,
 	            geoFlag,
 	            geoLatLng,
 	            time,
@@ -46233,23 +46288,23 @@
 
 	    // This will run our query.
 	    saveNewEmployee: function saveNewEmployee(signUpData) {
-	        console.log("helpers signUpData", signUpData);
+	        //console.log("helpers signUpData", signUpData)
 	        return axios.post('/api/employees', signUpData).then(function (results) {
-	            console.log("axios post /api/employees", results._id);
+	            //console.log("axios post /api/employees", results._id);
 	            return results._id;
 	        });
 	    },
 	    saveNewShift: function saveNewShift(shiftData) {
-	        console.log("helpers saveNewShift", shiftData);
+	        //console.log("helpers saveNewShift", shiftData)
 	        return axios.post('/api/shiftEvents', shiftData).then(function (results) {
-	            console.log("axios  post /api/shiftEvents results", results._id);
+	            //console.log("axios  post /api/shiftEvents results", results._id);
 	            return results._id;
 	        });
 	    },
 	    getInitialShift: function getInitialShift(employeeId) {
-	        console.log("helpers getInitialShift", employeeId);
+	        //console.log("helpers getInitialShift", employeeId)
 	        return axios.get('/api/shiftEvents', employeeId).then(function (results) {
-	            console.log("axios /api/shiftEvents results", results.data);
+	            //console.log("axios /api/shiftEvents results", results.data);
 	            return results.data;
 	        });
 	    }

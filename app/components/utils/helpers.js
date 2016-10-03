@@ -6,26 +6,26 @@ var helpers = {
 
     // This will run our query.
     saveNewEmployee: function(signUpData){
-        console.log("helpers signUpData", signUpData)
+        //console.log("helpers signUpData", signUpData)
         return axios.post('/api/employees', signUpData)
             .then(function(results){
-                console.log("axios post /api/employees", results._id);
+                //console.log("axios post /api/employees", results._id);
                 return results._id;
             })
     },
     saveNewShift: function(shiftData){
-        console.log("helpers saveNewShift", shiftData)
+        //console.log("helpers saveNewShift", shiftData)
         return axios.post('/api/shiftEvents', shiftData)
             .then(function(results){
-                console.log("axios  post /api/shiftEvents results", results._id);
+                //console.log("axios  post /api/shiftEvents results", results._id);
                 return results._id;
             })
     },
     getInitialShift: function(employeeId){
-               console.log("helpers getInitialShift", employeeId)
+               //console.log("helpers getInitialShift", employeeId)
         return axios.get('/api/shiftEvents', employeeId)
             .then(function(results){
-                console.log("axios /api/shiftEvents results", results.data);
+                //console.log("axios /api/shiftEvents results", results.data);
                 return results.data;
             })
     }

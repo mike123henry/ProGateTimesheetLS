@@ -45,8 +45,8 @@ app.get('/', (request, response) =>{
 //======signUp ==== restful ~= crud section ==================================
 //post ~= create
 app.post('/api/employees', function(req,res){
-    console.log('server.js has run post  /api/getSignUp');
-    console.log('req.body',req.body);
+    //console.log('server.js has run post  /api/getSignUp');
+    //console.log('req.body',req.body);
     var newEmployee = new Employees(req.body);
 
     newEmployee.save(function(err, doc){
@@ -61,13 +61,13 @@ app.post('/api/employees', function(req,res){
 
 //get ~= retreive
 app.get('/api/employees', function(req, res){
-    console.log('server.js has run get /api/getSignUp')
+    //console.log('server.js has run get /api/getSignUp')
     Employees.find({})
         .exec(function(err, doc){
             if(err){
                 console.log('server.js get /api/getSignUp has errored', err);
             } else {
-                console.log('server.js get /api/getSignUp doc =',doc)
+                //console.log('server.js get /api/getSignUp doc =',doc)
                 res.json(doc);
             }
         })
@@ -80,14 +80,14 @@ app.get('/api/employees', function(req, res){
 //=== shiftEvents ===================================================
 //post ~= create
 app.post('/api/shiftEvents', function(req,res){
-    console.log('server.js has run post  /api/shiftEvents');
-    console.log('req.body',req.body);
+    //console.log('server.js has run post  /api/shiftEvents');
+    //console.log('req.body',req.body);
     var newShiftEvent = new ShiftEvents(req.body);
     newShiftEvent.save(function(err, doc){
         if(err){
             console.log('newShiftEvent.save errored', err)
         } else {
-            console.log('newShiftEvent.save doc', doc)
+            //console.log('newShiftEvent.save doc', doc)
         }
     });
 
@@ -95,14 +95,14 @@ app.post('/api/shiftEvents', function(req,res){
 
 //get ~= retreive
 app.get('/api/shiftEvents', function(req, res){
-    console.log('server.js has run get /api/shiftEvents', req.body)
+    //console.log('server.js has run get /api/shiftEvents', req.body)
     ShiftEvents.findOne(req.body.employeename)
         .sort({createdAt: -1})
         .exec(function(err, doc){
             if(err){
                 console.log('server.js get /api/shiftEvents has errored', err);
             } else if (doc) {
-                console.log('server.js get /api/shiftEvents doc.isOnShift =',doc.isOnShift)
+                //console.log('server.js get /api/shiftEvents doc.isOnShift =',doc.isOnShift)
                 res.json(doc);
             } else {
                 res.json({isOnShift: false})
@@ -116,13 +116,13 @@ app.get('/api/shiftEvents', function(req, res){
 
 //=========================================================
 app.get('/api/getEmpColl', function(req, res){
-    console.log('server.js has run get /api/getEmpColl')
+    //console.log('server.js has run get /api/getEmpColl')
     Employees.find({})
         .exec(function(err, doc){
             if(err){
                 console.log('server.js /api/getEmpColl has errored', err);
             } else {
-                console.log('server.js /api/getEmpColl doc =',doc)
+                //console.log('server.js /api/getEmpColl doc =',doc)
                 res.json(doc);
             }
         })
