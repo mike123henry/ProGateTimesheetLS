@@ -13,6 +13,8 @@ const ShiftEventSchema = new Schema({
         type: Number},
     geolng:{
         type: Number}
+},{
+    timestamps:true
 });
 
 const ShiftEvent = mongoose.model('ShiftEvent', ShiftEventSchema);

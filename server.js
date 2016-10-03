@@ -77,9 +77,10 @@ app.get('/api/employees', function(req, res){
 //put ~= update
 
 
-//================================================================
-app.post('/api/shifties', function(req,res){
-    console.log('server.js has run post  /api/shifties');
+//=== shiftEvents ===================================================
+//post ~= create
+app.post('/api/shiftEvents', function(req,res){
+    console.log('server.js has run post  /api/shiftEvents');
     console.log('req.body',req.body);
     var newShiftEvent = new ShiftEvents(req.body);
     newShiftEvent.save(function(err, doc){
@@ -91,6 +92,27 @@ app.post('/api/shifties', function(req,res){
     });
 
 });
+
+//get ~= retreive
+app.get('/api/shiftEvents', function(req, res){
+    console.log('server.js has run get /api/shiftEvents', req.body)
+    ShiftEvents.findOne(req.body.employeename)
+        .sort({createdAt: -1})
+        .exec(function(err, doc){
+            if(err){
+                console.log('server.js get /api/shiftEvents has errored', err);
+            } else if (doc) {
+                console.log('server.js get /api/shiftEvents doc.isOnShift =',doc.isOnShift)
+                res.json(doc);
+            } else {
+                res.json({isOnShift: false})
+            }
+        })
+
+});
+
+//=========================================================
+//=========================================================
 
 //=========================================================
 app.get('/api/getEmpColl', function(req, res){

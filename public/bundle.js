@@ -60,7 +60,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	//render application to the broswe
+	//render application to the broswer
 	//use browserHistory to clear the 'strange characters' in the address bar of the broswer
 	// improt dependencies
 	(0, _reactDom.render)(_react2.default.createElement(
@@ -27200,15 +27200,23 @@
 	        } else {
 	            this.setState({ isLoggedIn: true });
 	            this.setState({
-	                employeename: "Fred"
+	                employeename: "Frank",
+	                employeeloginid: "Frank0005"
 	            });
 	        }
+	        var that = this;
+	        _helpers2.default.getInitialShift({ employeename: "Frank" }).then(function (isOnShiftRtn) {
+	            console.log('isOnShiftRtn.isOnShift = ', isOnShiftRtn.isOnShift);
+	            that.setState({
+	                isOnShift: isOnShiftRtn.isOnShift
+	            });
+	        });
 	    },
 	    handleSignUp: function handleSignUp() {
 	        console.log("NavBar handleSignUp 1");
 	        this.setState({
-	            employeename: "Fred",
-	            employeeloginid: "Fred0003"
+	            employeename: "Frank",
+	            employeeloginid: "Frank0005"
 	        });
 	    },
 	    handleShift: function handleShift() {
@@ -27220,9 +27228,9 @@
 	                geolat: position.latitude,
 	                geolng: position.longitude
 	            });
-	            console.log('b4 isOnShift', that.state.isOnShift);
+	            // console.log('b4 isOnShift',that.state.isOnShift);
 	            that.setState({ isOnShift: !that.state.isOnShift });
-	            console.log('after isOnShift', that.state.isOnShift);
+	            // console.log('after isOnShift',that.state.isOnShift);
 	        }).catch(function (err) {
 	            //display err
 	            console.log('geoStuff errored in NavBar.js', err);
@@ -27286,7 +27294,7 @@
 	            signUpFlag = void 0,
 	            geoFlag = void 0,
 	            geoLatLng = void 0,
-	            locationFlag = void 0,
+	            shiftFlag = void 0,
 	            time = void 0;
 
 	        if (this.state.isLoggedIn) {
@@ -27295,11 +27303,19 @@
 	                { bsSize: 'small', bsStyle: 'danger', type: 'submit', onClick: this.handleLogin },
 	                'Log Out'
 	            );
-	            locationFlag = _react2.default.createElement(
-	                _reactBootstrap.Button,
-	                { bsSize: 'small', bsStyle: 'success', type: 'submit', onClick: this.handleShift },
-	                'Start Shift'
-	            );
+	            if (this.state.isOnShift) {
+	                shiftFlag = _react2.default.createElement(
+	                    _reactBootstrap.Button,
+	                    { bsSize: 'small', bsStyle: 'danger', type: 'submit', onClick: this.handleShift },
+	                    'End Shift'
+	                );
+	            } else {
+	                shiftFlag = _react2.default.createElement(
+	                    _reactBootstrap.Button,
+	                    { bsSize: 'small', bsStyle: 'success', type: 'submit', onClick: this.handleShift },
+	                    'Start Shift'
+	                );
+	            }
 	        } else {
 	            loginFlag = _react2.default.createElement(
 	                _reactBootstrap.Button,
@@ -27310,11 +27326,6 @@
 	                _reactBootstrap.Button,
 	                { bsSize: 'small', bsStyle: 'info', type: 'submit', onClick: this.handleSignUp },
 	                'Sign Up'
-	            );
-	            locationFlag = _react2.default.createElement(
-	                _reactBootstrap.Button,
-	                { bsSize: 'small', bsStyle: 'danger', type: 'submit', onClick: this.handleShift },
-	                'End Shift'
 	            );
 	        }
 	        if (this.state.geolocation) {
@@ -27372,7 +27383,7 @@
 	                        { style: floatRRight },
 	                        loginFlag,
 	                        signUpFlag,
-	                        locationFlag
+	                        shiftFlag
 	                    )
 	                )
 	            ),
@@ -46224,15 +46235,22 @@
 	    saveNewEmployee: function saveNewEmployee(signUpData) {
 	        console.log("helpers signUpData", signUpData);
 	        return axios.post('/api/employees', signUpData).then(function (results) {
-	            console.log("axios results", results._id);
+	            console.log("axios post /api/employees", results._id);
 	            return results._id;
 	        });
 	    },
 	    saveNewShift: function saveNewShift(shiftData) {
 	        console.log("helpers saveNewShift", shiftData);
-	        return axios.post('/api/shifties', shiftData).then(function (results) {
-	            console.log("axios results", results._id);
+	        return axios.post('/api/shiftEvents', shiftData).then(function (results) {
+	            console.log("axios  post /api/shiftEvents results", results._id);
 	            return results._id;
+	        });
+	    },
+	    getInitialShift: function getInitialShift(employeeId) {
+	        console.log("helpers getInitialShift", employeeId);
+	        return axios.get('/api/shiftEvents', employeeId).then(function (results) {
+	            console.log("axios /api/shiftEvents results", results.data);
+	            return results.data;
 	        });
 	    }
 	};

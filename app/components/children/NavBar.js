@@ -33,15 +33,24 @@ export default React.createClass({
         } else {
             this.setState({isLoggedIn: true})
             this.setState({
-                employeename: "Fred"
+                employeename: "Frank",
+                employeeloginid: "Frank0005"
             })
         }
+        var that = this;
+        helpers.getInitialShift({employeename: "Frank"}).then(function(isOnShiftRtn){
+            console.log('isOnShiftRtn.isOnShift = ', isOnShiftRtn.isOnShift)
+            that.setState({
+                isOnShift: isOnShiftRtn.isOnShift
+            })
+        })
+
     },
     handleSignUp: function(){
         console.log("NavBar handleSignUp 1")
         this.setState({
-            employeename: "Fred",
-            employeeloginid: "Fred0003"
+            employeename: "Frank",
+            employeeloginid: "Frank0005"
         });
 
     },
@@ -55,9 +64,9 @@ export default React.createClass({
                     geolat: position.latitude,
                     geolng: position.longitude
                 })
-                console.log('b4 isOnShift',that.state.isOnShift);
+                // console.log('b4 isOnShift',that.state.isOnShift);
                 that.setState({isOnShift: !(that.state.isOnShift)})
-                console.log('after isOnShift',that.state.isOnShift);
+                // console.log('after isOnShift',that.state.isOnShift);
             })
             .catch(function(err){
                 //display err
@@ -118,17 +127,20 @@ export default React.createClass({
         } //end if employee has changed
     },
     render: function(){
-        let loginFlag, signUpFlag,geoFlag,geoLatLng,locationFlag,time;
+        let loginFlag, signUpFlag,geoFlag,geoLatLng,shiftFlag,time;
 
 
 
-        if(this.state.isLoggedIn){
+        if(this.state.isLoggedIn ){
             loginFlag = ( <Button bsSize="small" bsStyle="danger" type="submit"  onClick={this.handleLogin} >Log Out</Button>)
-            locationFlag =  ( <Button bsSize="small" bsStyle="success" type="submit"  onClick={this.handleShift} >Start Shift</Button>)
+            if(this.state.isOnShift){
+                shiftFlag =  ( <Button bsSize="small" bsStyle="danger" type="submit"  onClick={this.handleShift} >End Shift</Button>)
+            } else {
+                shiftFlag =  ( <Button bsSize="small" bsStyle="success" type="submit"  onClick={this.handleShift} >Start Shift</Button>)
+            }
         } else{
             loginFlag = ( <Button bsSize="small" bsStyle="success" type="submit" onClick={this.handleLogin} >Log In</Button>)
             signUpFlag = ( <Button bsSize="small" bsStyle="info" type="submit" onClick={this.handleSignUp}>Sign Up</Button>)
-            locationFlag =  ( <Button bsSize="small" bsStyle="danger" type="submit"  onClick={this.handleShift} >End Shift</Button>)
         }
         if(this.state.geolocation){
             geoLatLng = (<p>latitude = {this.state.geolat} and longitude = {this.state.geolng} </p>)
@@ -148,7 +160,7 @@ export default React.createClass({
                         <ButtonToolbar style={floatRRight}>
                               {loginFlag}
                               {signUpFlag}
-                              {locationFlag}
+                              {shiftFlag}
                         </ButtonToolbar>
                     </Navbar.Header>
                 </Navbar>
