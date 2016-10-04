@@ -80,34 +80,36 @@ app.get('/api/employees', function(req, res){
 //=== shiftEvents ===================================================
 //post ~= create
 app.post('/api/shiftEvents', function(req,res){
-    //console.log('server.js has run post  /api/shiftEvents');
-    //console.log('req.body',req.body);
+    console.log('server.js has run post  /api/shiftEvents');
+    console.log('post  /api/shiftEvents req.body = ',req.body);
     var newShiftEvent = new ShiftEvents(req.body);
     newShiftEvent.save(function(err, doc){
         if(err){
             console.log('newShiftEvent.save errored', err)
         } else {
-            //console.log('newShiftEvent.save doc', doc)
+            console.log('newShiftEvent.save doc', doc)
         }
     });
 
 });
 
 //get ~= retreive
-app.get('/api/shiftEvents', function(req, res){
-    //console.log('server.js has run get /api/shiftEvents', req.body)
-    ShiftEvents.findOne(req.body.employeename)
+app.post('/api/isOnShift', function(req, res){
+    console.log('server.js has run post /api/isOnShift req.body = ', req.body);
+    ShiftEvents.findOne(req.body)
         .sort({createdAt: -1})
         .exec(function(err, doc){
             if(err){
-                console.log('server.js get /api/shiftEvents has errored', err);
+                console.log('server.js post /api/isOnShift has errored', err);
             } else if (doc) {
-                //console.log('server.js get /api/shiftEvents doc.isOnShift =',doc.isOnShift)
+                console.log('server.js post /api/isOnShift doc =',doc);
+                console.log('server.js post /api/isOnShift doc.isOnShift =',doc.isOnShift);
                 res.json(doc);
             } else {
+                console.log('server.js post /api/isOnShift ran else -- doc = ', doc );
                 res.json({isOnShift: false})
             }
-        })
+        });
 
 });
 

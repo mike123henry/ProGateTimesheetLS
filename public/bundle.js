@@ -27194,7 +27194,10 @@
 	            firstName: "",
 	            lastName: "",
 	            loginFormOpen: false,
-	            signUpFormOpen: false
+	            signUpFormOpen: false,
+	            lastSSN: 9999,
+	            newSignUp: false,
+	            newLogin: false
 	        };
 	    },
 	    handleLoginFormOpen: function handleLoginFormOpen() {
@@ -27208,26 +27211,24 @@
 	            this.setState({ isLoggedIn: false });
 	        } else {
 	            this.setState({ isLoggedIn: true });
-	            this.setState({
-	                employeename: "Frank",
-	                employeeloginid: "Frank0005"
-	            });
 	        }
-	        var that = this;
-	        _helpers2.default.getInitialShift({ employeename: "Frank" }).then(function (isOnShiftRtn) {
-	            //console.log('isOnShiftRtn.isOnShift = ', isOnShiftRtn.isOnShift)
-	            that.setState({
-	                isOnShift: isOnShiftRtn.isOnShift
-	            });
-	        });
+	        // var that = this;
+	        // console.log('handleLogin employeeLoginId: this.state.employeeloginid = ',this.state.employeeloginid)
+	        // helpers.getInitialShift({employeeLoginId: this.state.employeeloginid})
+	        //     .then(function(isOnShiftRtn){
+	        //         console.log('isOnShiftRtn.isOnShift = ', isOnShiftRtn.isOnShift)
+	        //         that.setState({
+	        //             isOnShift: isOnShiftRtn.isOnShift
+	        //         })
+	        //     })
 	    },
-	    handleSignUp: function handleSignUp(e) {
-	        //console.log("NavBar handleSignUp 1")
-	        this.setState({
-	            firstName: e.target.value
-	        });
-	        console.log('this.state.firstName = ', this.state.firstName);
-	    },
+	    // handleSignUp: function(e){
+	    //     //console.log("NavBar handleSignUp 1")
+	    //     this.setState({
+	    //         firstName: e.target.value
+	    //     });
+	    //     console.log('this.state.firstName = ',this.state.firstName)
+	    // },
 	    handleFirstName: function handleFirstName(e) {
 	        //console.log("NavBar handleSignUp 1")
 	        this.setState({
@@ -27242,11 +27243,27 @@
 	        });
 	        console.log('this.state.firstName = ', this.state.firstName);
 	    },
-	    submitValue: function submitValue() {
+	    handleLastSSN: function handleLastSSN(e) {
+	        //console.log("NavBar handleSignUp 1")
+	        this.setState({
+	            lastSSN: e.target.value
+	        });
+	        console.log('this.state.firstName = ', this.state.firstName);
+	    },
+	    submitSignUpValue: function submitSignUpValue() {
 	        this.setState({
 	            employeename: this.state.firstName + " " + this.state.lastName,
-	            employeeloginid: this.state.lastName + "0006",
-	            signUpFormOpen: false
+	            employeeloginid: this.state.lastName + this.state.lastSSN,
+	            signUpFormOpen: false,
+	            newSignUp: true
+	        });
+	    },
+	    submitLoginValue: function submitLoginValue() {
+	        this.setState({
+	            employeename: this.state.firstName + " " + this.state.lastName,
+	            employeeloginid: this.state.lastName + this.state.lastSSN,
+	            loginFormOpen: false,
+	            newLogin: true
 	        });
 	    },
 	    handleShift: function handleShift() {
@@ -27258,9 +27275,9 @@
 	                geolat: position.latitude,
 	                geolng: position.longitude
 	            });
-	            // console.log('b4 isOnShift',that.state.isOnShift);
+	            console.log('b4 isOnShift', that.state.isOnShift);
 	            that.setState({ isOnShift: !that.state.isOnShift });
-	            // console.log('after isOnShift',that.state.isOnShift);
+	            console.log('after isOnShift', that.state.isOnShift);
 	        }).catch(function (err) {
 	            //display err
 	            console.log('geoStuff errored in NavBar.js', err);
@@ -27299,14 +27316,30 @@
 	        }
 	    },
 	    componentWillUpdate: function componentWillUpdate(nextProps, nextState) {
-	        if (this.state.employeename !== nextState.employeename || this.state.employeeloginid !== nextState.employeeloginid) {
+	        if (this.state.newSignUp !== nextState.newSignUp && nextState.newSignUp === true) {
 	            var signUpData = {
 	                employeename: nextState.employeename,
 	                employeeloginid: nextState.employeeloginid
 	            };
 	            _helpers2.default.saveNewEmployee(signUpData);
+	            this.setState({ newSignUp: false });
+	        };
+	        if (this.state.newLogin !== nextState.newLogin && nextState.newLogin === true) {
+	            var loginData = { employeeloginid: nextState.employeeloginid };
+	            var that = this;
+	            console.log('componentWillUpdate loginData = ', loginData);
+	            _helpers2.default.getInitialShift(loginData).then(function (isOnShiftRtn) {
+	                console.log('componentWillUpdate isOnShiftRtn.isOnShift = ', isOnShiftRtn.isOnShift);
+	                that.setState({
+	                    isOnShift: isOnShiftRtn.isOnShift
+	                });
+	            });
+	            this.setState({ newLogin: false });
+	            this.handleLogin();
 	        };
 	        if (this.state.isOnShift !== nextState.isOnShift) {
+	            console.log('this.state.isOnShift = ', this.state.isOnShift);
+	            console.log('nextState.isOnShift = ', nextState.isOnShift);
 	            var shiftData = {
 	                employeename: nextState.employeename,
 	                employeeloginid: nextState.employeeloginid,
@@ -27324,7 +27357,8 @@
 	            geoLatLng = void 0,
 	            shiftFlag = void 0,
 	            time = void 0,
-	            signUpForm = void 0;
+	            signUpForm = void 0,
+	            loginForm = void 0;
 
 	        if (this.state.signUpFormOpen) {
 	            signUpForm = _react2.default.createElement(
@@ -27345,9 +27379,48 @@
 	                _react2.default.createElement('input', { value: this.state.lastName, onChange: this.handleLastName }),
 	                _react2.default.createElement('br', null),
 	                _react2.default.createElement(
+	                    'h3',
+	                    null,
+	                    ' Enter Last 4 digits of SSN '
+	                ),
+	                _react2.default.createElement('input', { value: this.state.lastSSN, onChange: this.handleLastSSN }),
+	                _react2.default.createElement('br', null),
+	                _react2.default.createElement(
 	                    'button',
-	                    { onClick: this.submitValue },
-	                    'Submit Name'
+	                    { onClick: this.submitSignUpValue },
+	                    'Submit Sign Up'
+	                )
+	            );
+	        };
+	        if (this.state.loginFormOpen) {
+	            loginForm = _react2.default.createElement(
+	                'div',
+	                null,
+	                _react2.default.createElement(
+	                    'h3',
+	                    null,
+	                    ' First Name '
+	                ),
+	                _react2.default.createElement('input', { value: this.state.firstName, onChange: this.handleFirstName }),
+	                _react2.default.createElement('br', null),
+	                _react2.default.createElement(
+	                    'h3',
+	                    null,
+	                    ' Last Name '
+	                ),
+	                _react2.default.createElement('input', { value: this.state.lastName, onChange: this.handleLastName }),
+	                _react2.default.createElement('br', null),
+	                _react2.default.createElement(
+	                    'h3',
+	                    null,
+	                    ' Enter Last 4 digits of SSN '
+	                ),
+	                _react2.default.createElement('input', { value: this.state.lastSSN, onChange: this.handleLastSSN }),
+	                _react2.default.createElement('br', null),
+	                _react2.default.createElement(
+	                    'button',
+	                    { onClick: this.submitLoginValue },
+	                    'Submit Login'
 	                )
 	            );
 	        }
@@ -27442,6 +27515,7 @@
 	                )
 	            ),
 	            signUpForm,
+	            loginForm,
 	            geoFlag,
 	            geoLatLng,
 	            time,
@@ -46302,9 +46376,9 @@
 	        });
 	    },
 	    getInitialShift: function getInitialShift(employeeId) {
-	        //console.log("helpers getInitialShift", employeeId)
-	        return axios.get('/api/shiftEvents', employeeId).then(function (results) {
-	            //console.log("axios /api/shiftEvents results", results.data);
+	        console.log("helpers getInitialShift employeeId = ", employeeId);
+	        return axios.post('/api/isOnShift', employeeId).then(function (results) {
+	            console.log("axios /api/shiftEvents results", results.data);
 	            return results.data;
 	        });
 	    }

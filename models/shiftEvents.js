@@ -7,6 +7,8 @@ const ShiftEventSchema = new Schema({
         default: Date.now },
     employeename: {
         type: String},
+    employeeloginid: {
+        type: String},
     isOnShift: {
         type: Boolean},
     geolat: {

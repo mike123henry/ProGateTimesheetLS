@@ -27,7 +27,10 @@ export default React.createClass({
             firstName: "",
             lastName: "",
             loginFormOpen: false,
-            signUpFormOpen: false
+            signUpFormOpen: false,
+            lastSSN: 9999,
+            newSignUp: false,
+            newLogin: false
         }
     },
     handleLoginFormOpen: function(){
@@ -41,27 +44,24 @@ export default React.createClass({
             this.setState({ isLoggedIn: false})
         } else {
             this.setState({isLoggedIn: true})
-            this.setState({
-                employeename: "Frank",
-                employeeloginid: "Frank0005"
-            })
         }
-        var that = this;
-        helpers.getInitialShift({employeename: "Frank"}).then(function(isOnShiftRtn){
-            //console.log('isOnShiftRtn.isOnShift = ', isOnShiftRtn.isOnShift)
-            that.setState({
-                isOnShift: isOnShiftRtn.isOnShift
-            })
-        })
-
+        // var that = this;
+        // console.log('handleLogin employeeLoginId: this.state.employeeloginid = ',this.state.employeeloginid)
+        // helpers.getInitialShift({employeeLoginId: this.state.employeeloginid})
+        //     .then(function(isOnShiftRtn){
+        //         console.log('isOnShiftRtn.isOnShift = ', isOnShiftRtn.isOnShift)
+        //         that.setState({
+        //             isOnShift: isOnShiftRtn.isOnShift
+        //         })
+        //     })
     },
-    handleSignUp: function(e){
-        //console.log("NavBar handleSignUp 1")
-        this.setState({
-            firstName: e.target.value
-        });
-        console.log('this.state.firstName = ',this.state.firstName)
-    },
+    // handleSignUp: function(e){
+    //     //console.log("NavBar handleSignUp 1")
+    //     this.setState({
+    //         firstName: e.target.value
+    //     });
+    //     console.log('this.state.firstName = ',this.state.firstName)
+    // },
     handleFirstName: function(e){
         //console.log("NavBar handleSignUp 1")
         this.setState({
@@ -76,12 +76,29 @@ export default React.createClass({
         });
         console.log('this.state.firstName = ',this.state.firstName)
     },
-    submitValue: function(){
+    handleLastSSN: function(e){
+        //console.log("NavBar handleSignUp 1")
+        this.setState({
+            lastSSN: e.target.value
+        });
+        console.log('this.state.firstName = ',this.state.firstName)
+    },
+    submitSignUpValue: function(){
         this.setState({
             employeename: this.state.firstName +" "+ this.state.lastName,
-            employeeloginid: this.state.lastName + "0006",
-            signUpFormOpen: false
+            employeeloginid: this.state.lastName + this.state.lastSSN,
+            signUpFormOpen: false,
+            newSignUp: true
         })
+    },
+    submitLoginValue: function(){
+        this.setState({
+            employeename: this.state.firstName +" "+ this.state.lastName,
+            employeeloginid: this.state.lastName + this.state.lastSSN,
+            loginFormOpen: false,
+            newLogin: true
+        });
+
     },
     handleShift: function(){
         //set that = to this because the scope of this will change when geoStuff() is called
@@ -93,9 +110,9 @@ export default React.createClass({
                     geolat: position.latitude,
                     geolng: position.longitude
                 })
-                // console.log('b4 isOnShift',that.state.isOnShift);
+                console.log('b4 isOnShift',that.state.isOnShift);
                 that.setState({isOnShift: !(that.state.isOnShift)})
-                // console.log('after isOnShift',that.state.isOnShift);
+                console.log('after isOnShift',that.state.isOnShift);
             })
             .catch(function(err){
                 //display err
@@ -135,14 +152,31 @@ export default React.createClass({
             }
     },
     componentWillUpdate: function(nextProps, nextState){
-        if ( this.state.employeename !== nextState.employeename || this.state.employeeloginid !== nextState.employeeloginid) {
+        if ( this.state.newSignUp !== nextState.newSignUp && nextState.newSignUp === true) {
             var signUpData = {
                 employeename: nextState.employeename,
                 employeeloginid: nextState.employeeloginid
             };
             helpers.saveNewEmployee(signUpData);
+            this.setState({newSignUp: false})
+        };
+         if ( this.state.newLogin !== nextState.newLogin && nextState.newLogin === true) {
+            var loginData =  { employeeloginid: nextState.employeeloginid};
+            var that = this;
+            console.log('componentWillUpdate loginData = ',loginData)
+            helpers.getInitialShift(loginData)
+                .then(function(isOnShiftRtn){
+                    console.log('componentWillUpdate isOnShiftRtn.isOnShift = ', isOnShiftRtn.isOnShift);
+                    that.setState({
+                    isOnShift: isOnShiftRtn.isOnShift
+                });
+            });
+            this.setState({newLogin: false});
+            this.handleLogin();
         };
         if (this.state.isOnShift !== nextState.isOnShift ) {
+            console.log('this.state.isOnShift = ',this.state.isOnShift);
+            console.log('nextState.isOnShift = ', nextState.isOnShift);
             var shiftData = {
                 employeename: nextState.employeename,
                 employeeloginid: nextState.employeeloginid,
@@ -154,7 +188,7 @@ export default React.createClass({
         };
     },
     render: function(){
-        let loginFlag, signUpFlag,geoFlag,geoLatLng,shiftFlag,time,signUpForm;
+        let loginFlag, signUpFlag,geoFlag,geoLatLng,shiftFlag,time,signUpForm,loginForm;
 
         if(this.state.signUpFormOpen){
             signUpForm = (
@@ -165,7 +199,26 @@ export default React.createClass({
                     <h3> Last Name </h3>
                     <input value={this.state.lastName} onChange={this.handleLastName} />
                     <br />
-                    <button onClick={this.submitValue}>Submit Name</button>
+                    <h3> Enter Last 4 digits of SSN </h3>
+                    <input value={this.state.lastSSN} onChange={this.handleLastSSN} />
+                    <br />
+                    <button onClick={this.submitSignUpValue}>Submit Sign Up</button>
+                </div>
+            );
+        };
+        if(this.state.loginFormOpen){
+            loginForm = (
+                <div>
+                    <h3> First Name </h3>
+                    <input value={this.state.firstName}  onChange={this.handleFirstName} />
+                    <br />
+                    <h3> Last Name </h3>
+                    <input value={this.state.lastName} onChange={this.handleLastName} />
+                    <br />
+                    <h3> Enter Last 4 digits of SSN </h3>
+                    <input value={this.state.lastSSN} onChange={this.handleLastSSN} />
+                    <br />
+                    <button onClick={this.submitLoginValue}>Submit Login</button>
                 </div>
             );
         }
@@ -207,6 +260,7 @@ export default React.createClass({
                     </Navbar.Header>
                 </Navbar>
                 {signUpForm}
+                {loginForm}
                     {geoFlag}
                     {geoLatLng}
                     {time}

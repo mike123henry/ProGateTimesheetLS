@@ -22,10 +22,10 @@ var helpers = {
             })
     },
     getInitialShift: function(employeeId){
-               //console.log("helpers getInitialShift", employeeId)
-        return axios.get('/api/shiftEvents', employeeId)
+               console.log("helpers getInitialShift employeeId = ", employeeId)
+        return axios.post('/api/isOnShift', employeeId)
             .then(function(results){
-                //console.log("axios /api/shiftEvents results", results.data);
+                console.log("axios /api/shiftEvents results", results.data);
                 return results.data;
             })
     }
