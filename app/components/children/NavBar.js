@@ -46,13 +46,8 @@ export default React.createClass({
     handleSignUpFormOpen: function(){
         this.setState({signUpFormOpen: true})
     },
-    handleLogin: function(){
-        if (this.state.isLoggedIn){
+    handleLogout: function(){
             this.setState({ isLoggedIn: false})
-        } else {
-            this.setState({isLoggedIn: true})
-        }
-
     },
     handleFirstName: function(e){
         //console.log("NavBar handleSignUp 1")
@@ -95,6 +90,19 @@ export default React.createClass({
             loginFormOpen: false,
             newLogin: true
         });
+    },
+    displayLogin: function(flag, loggedInAs){
+        if (flag){
+            this.setState({
+                employeescreenname: loggedInAs,
+                isLoggedIn: true
+            });
+        } else {
+            this.setState({
+                employeescreenname: "Login FAILED",
+                isLoggedIn: false
+                });
+        };
     },
     handleShift: function(){
         //set that = to this because the scope of this will change when geoStuff() is called
@@ -155,8 +163,17 @@ export default React.createClass({
                 });
             });
             this.setState({newLogin: false});
-            this.handleLogin();
             helpers.getLogin(loginData)
+                .then(function(isLoginDoneRtn){
+                    console.log('componentWillUpdate .getLogin isLoginDoneRtn = ',isLoginDoneRtn)
+                    console.log('componentWillUpdate .getLogin isLoginDoneRtn.data.employeescreenname = ',isLoginDoneRtn.data.employeescreenname)
+
+                    if (isLoginDoneRtn.data.employeescreenname){
+                        that.displayLogin(true, isLoginDoneRtn.data.employeescreenname);
+                    } else {
+                        that.displayLogin(false);
+                    }
+                })
         };
         if (this.state.isOnShift !== nextState.isOnShift ) {
             console.log('this.state.isOnShift = ',this.state.isOnShift);
@@ -186,7 +203,7 @@ export default React.createClass({
         };
     },
     render: function(){
-        let loginFlag, signUpFlag,geoFlag,geoLatLng,shiftFlag,time,signUpForm,loginForm;
+        let loginFlag, signUpFlag,geoFlag,geoLatLng,shiftFlag,time,signUpForm,loginForm,screenName;
 
         if(this.state.signUpFormOpen){
             signUpForm = (
@@ -221,14 +238,31 @@ export default React.createClass({
             );
         };
         if(this.state.isLoggedIn ){
-            loginFlag = ( <Button bsSize="small" bsStyle="danger" type="submit"  onClick={this.handleLogin} >Log Out</Button>)
+            loginFlag = ( <Button bsSize="small" bsStyle="danger" type="submit"  onClick={this.handleLogout} >Log Out</Button>)
+
             if(this.state.isOnShift){
-                shiftFlag =  ( <Button bsSize="small" bsStyle="danger" type="submit"  onClick={this.handleShift} >End Shift</Button>)
+                shiftFlag =  (
+                    <div>
+
+                        <h3 className="text-center"> {this.state.employeescreenname} </h3>
+                        <h5 className="text-center">is logged In and currently</h5>
+                        <h3 className="text-center"> On Shift </h3>
+                        <br /><br />
+                        <Button className="text-center" bsSize="small" bsStyle="danger" type="submit"  onClick={this.handleShift} >End Shift</Button>
+                    </div>)
             } else {
-                shiftFlag =  ( <Button bsSize="small" bsStyle="success" type="submit"  onClick={this.handleShift} >Start Shift</Button>)
+                shiftFlag =  (
+                    <div>
+
+                        <h3 > {this.state.employeescreenname} </h3>
+                        <h5 className="text-center"> is logged In and currently </h5>
+                        <h3 className="text-center"> Off Shift </h3>
+                        <br /><br />
+                        <Button className="text-center" bsSize="small" bsStyle="success" type="submit"  onClick={this.handleShift} >Start Shift</Button>
+                    </div>)
             };
         } else if(!this.state.signUpFormOpen && !this.state.loginFormOpen){
-            loginFlag = ( <Button bsSize="small" bsStyle="success" type="submit" onClick={this.handleLoginFormOpen} >Log In xxx</Button>)
+            loginFlag = ( <Button bsSize="small" bsStyle="success" type="submit" onClick={this.handleLoginFormOpen} >Log In</Button>)
             signUpFlag = ( <Button bsSize="small" bsStyle="info" type="submit" onClick={this.handleSignUpFormOpen}>Sign Up</Button>)
         };
         if(this.state.geolocation){
@@ -250,15 +284,12 @@ export default React.createClass({
                         </ButtonToolbar>
                     </Navbar.Header>
                 </Navbar>
-
-                {signUpForm}
-                {loginForm}
-                    {geoFlag}
-                    {geoLatLng}
-                    {time}
-                  {shiftFlag}
-                  {signUpFlag}
-                {/*add page title*/}
+                <div className="text-center">
+                    {signUpForm}
+                    {loginForm}
+                    {shiftFlag}
+                    {signUpFlag}
+                </div>
             </div>
         )
     }

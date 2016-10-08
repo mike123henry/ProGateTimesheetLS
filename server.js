@@ -114,6 +114,7 @@ app.post('/api/login', function(req, res){
         .exec(function(err, doc){
             if(err){
                 console.log('server.js post /api/login has errored', err);
+                res.send("Login Failed");
             } else if (doc) {
                 console.log('server.js post /api/login doc =',doc);
                 console.log('server.js post /api/login doc.employeephone =',doc.employeephone);

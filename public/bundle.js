@@ -27211,12 +27211,8 @@
 	    handleSignUpFormOpen: function handleSignUpFormOpen() {
 	        this.setState({ signUpFormOpen: true });
 	    },
-	    handleLogin: function handleLogin() {
-	        if (this.state.isLoggedIn) {
-	            this.setState({ isLoggedIn: false });
-	        } else {
-	            this.setState({ isLoggedIn: true });
-	        }
+	    handleLogout: function handleLogout() {
+	        this.setState({ isLoggedIn: false });
 	    },
 	    handleFirstName: function handleFirstName(e) {
 	        //console.log("NavBar handleSignUp 1")
@@ -27259,6 +27255,19 @@
 	            loginFormOpen: false,
 	            newLogin: true
 	        });
+	    },
+	    displayLogin: function displayLogin(flag, loggedInAs) {
+	        if (flag) {
+	            this.setState({
+	                employeescreenname: loggedInAs,
+	                isLoggedIn: true
+	            });
+	        } else {
+	            this.setState({
+	                employeescreenname: "Login FAILED",
+	                isLoggedIn: false
+	            });
+	        };
 	    },
 	    handleShift: function handleShift() {
 	        //set that = to this because the scope of this will change when geoStuff() is called
@@ -27316,8 +27325,16 @@
 	                });
 	            });
 	            this.setState({ newLogin: false });
-	            this.handleLogin();
-	            _helpers2.default.getLogin(loginData);
+	            _helpers2.default.getLogin(loginData).then(function (isLoginDoneRtn) {
+	                console.log('componentWillUpdate .getLogin isLoginDoneRtn = ', isLoginDoneRtn);
+	                console.log('componentWillUpdate .getLogin isLoginDoneRtn.data.employeescreenname = ', isLoginDoneRtn.data.employeescreenname);
+
+	                if (isLoginDoneRtn.data.employeescreenname) {
+	                    that.displayLogin(true, isLoginDoneRtn.data.employeescreenname);
+	                } else {
+	                    that.displayLogin(false);
+	                }
+	            });
 	        };
 	        if (this.state.isOnShift !== nextState.isOnShift) {
 	            console.log('this.state.isOnShift = ', this.state.isOnShift);
@@ -27352,7 +27369,8 @@
 	            shiftFlag = void 0,
 	            time = void 0,
 	            signUpForm = void 0,
-	            loginForm = void 0;
+	            loginForm = void 0,
+	            screenName = void 0;
 
 	        if (this.state.signUpFormOpen) {
 	            signUpForm = _react2.default.createElement(
@@ -27421,27 +27439,74 @@
 	        if (this.state.isLoggedIn) {
 	            loginFlag = _react2.default.createElement(
 	                _reactBootstrap.Button,
-	                { bsSize: 'small', bsStyle: 'danger', type: 'submit', onClick: this.handleLogin },
+	                { bsSize: 'small', bsStyle: 'danger', type: 'submit', onClick: this.handleLogout },
 	                'Log Out'
 	            );
+
 	            if (this.state.isOnShift) {
 	                shiftFlag = _react2.default.createElement(
-	                    _reactBootstrap.Button,
-	                    { bsSize: 'small', bsStyle: 'danger', type: 'submit', onClick: this.handleShift },
-	                    'End Shift'
+	                    'div',
+	                    null,
+	                    _react2.default.createElement(
+	                        'h3',
+	                        { className: 'text-center' },
+	                        ' ',
+	                        this.state.employeescreenname,
+	                        ' '
+	                    ),
+	                    _react2.default.createElement(
+	                        'h5',
+	                        { className: 'text-center' },
+	                        'is logged In and currently'
+	                    ),
+	                    _react2.default.createElement(
+	                        'h3',
+	                        { className: 'text-center' },
+	                        ' On Shift '
+	                    ),
+	                    _react2.default.createElement('br', null),
+	                    _react2.default.createElement('br', null),
+	                    _react2.default.createElement(
+	                        _reactBootstrap.Button,
+	                        { className: 'text-center', bsSize: 'small', bsStyle: 'danger', type: 'submit', onClick: this.handleShift },
+	                        'End Shift'
+	                    )
 	                );
 	            } else {
 	                shiftFlag = _react2.default.createElement(
-	                    _reactBootstrap.Button,
-	                    { bsSize: 'small', bsStyle: 'success', type: 'submit', onClick: this.handleShift },
-	                    'Start Shift'
+	                    'div',
+	                    null,
+	                    _react2.default.createElement(
+	                        'h3',
+	                        null,
+	                        ' ',
+	                        this.state.employeescreenname,
+	                        ' '
+	                    ),
+	                    _react2.default.createElement(
+	                        'h5',
+	                        { className: 'text-center' },
+	                        ' is logged In and currently '
+	                    ),
+	                    _react2.default.createElement(
+	                        'h3',
+	                        { className: 'text-center' },
+	                        ' Off Shift '
+	                    ),
+	                    _react2.default.createElement('br', null),
+	                    _react2.default.createElement('br', null),
+	                    _react2.default.createElement(
+	                        _reactBootstrap.Button,
+	                        { className: 'text-center', bsSize: 'small', bsStyle: 'success', type: 'submit', onClick: this.handleShift },
+	                        'Start Shift'
+	                    )
 	                );
 	            };
 	        } else if (!this.state.signUpFormOpen && !this.state.loginFormOpen) {
 	            loginFlag = _react2.default.createElement(
 	                _reactBootstrap.Button,
 	                { bsSize: 'small', bsStyle: 'success', type: 'submit', onClick: this.handleLoginFormOpen },
-	                'Log In xxx'
+	                'Log In'
 	            );
 	            signUpFlag = _react2.default.createElement(
 	                _reactBootstrap.Button,
@@ -27496,13 +27561,14 @@
 	                    )
 	                )
 	            ),
-	            signUpForm,
-	            loginForm,
-	            geoFlag,
-	            geoLatLng,
-	            time,
-	            shiftFlag,
-	            signUpFlag
+	            _react2.default.createElement(
+	                'div',
+	                { className: 'text-center' },
+	                signUpForm,
+	                loginForm,
+	                shiftFlag,
+	                signUpFlag
+	            )
 	        );
 	    }
 	});
