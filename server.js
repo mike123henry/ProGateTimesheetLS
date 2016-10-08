@@ -1,6 +1,6 @@
 'use strict';
 //get environmant variables
-require('dotenv').config();
+//require('dotenv').config();
 
 //setup dependencies
 const express = require('express');
