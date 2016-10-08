@@ -119,7 +119,7 @@ app.post('/api/login', function(req, res){
                 console.log('server.js post /api/login doc =',doc);
                 console.log('server.js post /api/login doc.employeephone =',doc.employeephone);
                 twilio_obj.to = "+1"+doc.employeephone ;
-                //console.log('server.js post /api/login doc.login =',doc.isOnShift);
+                console.log('server.js post /api/login twilio_obj =',twilio_obj);
                 res.json(doc);
             } else {
                 console.log('server.js post /api/login ran else -- doc = ', doc );
