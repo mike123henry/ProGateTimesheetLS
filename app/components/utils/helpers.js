@@ -17,8 +17,8 @@ var helpers = {
         //console.log("helpers saveNewShift", shiftData)
         return axios.post('/api/shiftEvents', shiftData)
             .then(function(results){
-                //console.log("axios  post /api/shiftEvents results", results._id);
-                return results._id;
+                console.log("saveNewShift axios  post /api/shiftEvents results.data", results.data);
+                return results.data;
             })
     },
     getInitialShift: function(employeeId){

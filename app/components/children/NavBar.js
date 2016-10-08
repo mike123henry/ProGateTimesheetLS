@@ -4,6 +4,7 @@ import { Navbar, Nav, NavItem, Input, Button, ButtonToolbar } from 'react-bootst
 import timeStamp from '../utils/timeStamp.js'
 import geoStuff from "../utils/geoStuff.js";
 import helpers from "../utils/helpers.js";
+var moment = require('moment')
 
 
 
@@ -176,8 +177,11 @@ export default React.createClass({
                 })
         };
         if (this.state.isOnShift !== nextState.isOnShift ) {
-            console.log('this.state.isOnShift = ',this.state.isOnShift);
-            console.log('nextState.isOnShift = ', nextState.isOnShift);
+            var that = this
+            var textMessage = nextState.employeescreenname;
+            //console.log('textMessage  nextState.employeescreenname = ',textMessage)
+            //console.log('this.state.isOnShift = ',this.state.isOnShift);
+            //console.log('nextState.isOnShift = ', nextState.isOnShift);
             var shiftData = {
                 employeename: nextState.employeename,
                 employeeloginid: nextState.employeeloginid,
@@ -187,17 +191,32 @@ export default React.createClass({
                 geolng: nextState.geolng
             };
             if (nextState.isInitialShiftDate) {
-                console.log('initialShiftData true this.state.isOnShift = ',this.state.isOnShift);
-                console.log('initialShiftData nextState.isInitialShiftDate = ',nextState.isInitialShiftDate);
-                console.log('initialShiftData this.state.isInitialShiftDate = ',this.state.isInitialShiftDate);
+                //console.log('initialShiftData true this.state.isOnShift = ',this.state.isOnShift);
+                //console.log('initialShiftData nextState.isInitialShiftDate = ',nextState.isInitialShiftDate);
+                //console.log('initialShiftData this.state.isInitialShiftDate = ',this.state.isInitialShiftDate);
                 this.setState({isInitialShiftDate: false});
 
             } else{
-                console.log('initialShiftData false this.state.isOnShift = ',this.state.isOnShift);
-                console.log('nextState.isInitialShiftDate = ',nextState.isInitialShiftDate);
-                console.log('this.state.isInitialShiftDate = ',this.state.isInitialShiftDate);
-                helpers.saveNewShift(shiftData);
-                helpers.sendText({message:"build a better message here"});
+                //console.log('initialShiftData false this.state.isOnShift = ',this.state.isOnShift);
+                if(this.state.isOnShift){
+                    textMessage = " has started shift at ";
+                } else {
+                    textMessage = " has ended shift at ";
+                }
+                //console.log('textMessage  1 = ',textMessage)
+                //console.log('nextState.isInitialShiftDate = ',nextState.isInitialShiftDate);
+                //console.log('this.state.isInitialShiftDate = ',this.state.isInitialShiftDate);
+                helpers.saveNewShift(shiftData)
+                    .then(function(shiftDataRtn){
+                        //console.log("that.state.employeescreenname = ",that.state.employeescreenname)
+                        textMessage = nextState.employeescreenname + textMessage + moment(shiftDataRtn.createdAt).format('MMMM Do YYYY, h:mm:ss a');
+                        //console.log('textMessage  2 = ',textMessage)
+                        //console.log('helpers.saveNewShift.then shiftDataRtn.createdAt = ',shiftDataRtn.createdAt)
+                        //console.log('moment = ', moment(shiftDataRtn.createdAt).format('MMMM Do YYYY, h:mm:ss a'));
+                        //console.log('textMessage  3 = ',textMessage)
+                        helpers.sendText({message: textMessage});
+                    })
+
             };
 
         };

@@ -139,9 +139,11 @@ app.post('/api/shiftEvents', function(req,res){
     var newShiftEvent = new ShiftEvents(req.body);
     newShiftEvent.save(function(err, doc){
         if(err){
-            console.log('newShiftEvent.save errored', err)
+            console.log('newShiftEvent.save errored', err);
+
         } else {
-            console.log('newShiftEvent.save doc', doc)
+            console.log('newShiftEvent.save doc', doc);
+            res.json(doc);
         }
     });
 
