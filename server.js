@@ -43,7 +43,7 @@ var client = new twilio.RestClient(accountSid, authToken);
 
 app.post("/twilioFeed",  function(req,res){
     console.log('server.js teilio has posted');
-    console.log('req = ',req);
+    //console.log('req = ',req);
     console.log('req.body = ',req.body);
     console.log('req.body.message = ',req.body.message);
     twilio_obj.body = req.body.message;
