@@ -4,14 +4,21 @@ const Schema = mongoose.Schema;
 const EmployeeSchema = new Schema({
     employeename: {
         type: String,
-        required: true,
-        unique: true
-    },
+        required: true},
+
+    employeescreenname: {
+        type: String,
+        required: true},
+
     employeeloginid: {
         type: String,
         required: true,
-        unique: true
-    }
+        unique: true},
+
+    employeephone: {
+        type: String,
+        required: true}
+
 },{
     timestamps:true
 });

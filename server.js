@@ -1,14 +1,18 @@
 'use strict';
+//get environmant variables
+require('dotenv').config();
+
 //setup dependencies
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 var bodyParser = require('body-parser');
+var twilio = require('twilio');
 
 //import files
 var Employees = require('./models/employees.js');
-var ShiftEvents = require('./models/shiftEvents.js')
-
+var ShiftEvents = require('./models/shiftEvents.js');
+//var twilioRoutes = require( "./app/textMe.js");
 
 
 //setup express
@@ -30,7 +34,31 @@ db.once('open', function() {
 });
 
 
+//twilio stuff=======================================
+var accountSid = process.env.TWILIO_SID // Your Account SID from www.twilio.com/console
+var authToken = process.env.TWILIO_TOKEN;   // Your Auth Token from www.twilio.com/console
+var fromNumber = process.env.TWILIO_FROM
+var twilio_obj = {};
+var client = new twilio.RestClient(accountSid, authToken);
 
+app.post("/twilioFeed",  function(req,res){
+    console.log('server.js teilio has posted');
+    console.log('req = ',req);
+    console.log('req.body = ',req.body);
+    console.log('req.body.message = ',req.body.message);
+    twilio_obj.body = req.body.message;
+    twilio_obj.from = process.env.TWILIO_FROM;
+    console.log('twilio_obj = ',twilio_obj);
+    client.messages.create(twilio_obj, function(err, message) {
+        if(err){
+          console.log(err)
+        } else {
+         console.log(message.sid);
+        }
+    });
+
+ });
+//==================================================
 //Main route, redirect to the react portion of the app (because of the bundle.js file)
 app.get('/', (request, response) =>{
     response.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -45,8 +73,8 @@ app.get('/', (request, response) =>{
 //======signUp ==== restful ~= crud section ==================================
 //post ~= create
 app.post('/api/employees', function(req,res){
-    //console.log('server.js has run post  /api/getSignUp');
-    //console.log('req.body',req.body);
+    console.log('server.js has run post  /api/getSignUp');
+    console.log('req.body',req.body);
     var newEmployee = new Employees(req.body);
 
     newEmployee.save(function(err, doc){
@@ -61,11 +89,11 @@ app.post('/api/employees', function(req,res){
 
 //get ~= retreive
 app.get('/api/employees', function(req, res){
-    //console.log('server.js has run get /api/getSignUp')
+    //console.log('server.js has run get /api/employees')
     Employees.find({})
         .exec(function(err, doc){
             if(err){
-                console.log('server.js get /api/getSignUp has errored', err);
+                console.log('server.js get /api/employees has errored', err);
             } else {
                 //console.log('server.js get /api/getSignUp doc =',doc)
                 res.json(doc);
@@ -75,6 +103,31 @@ app.get('/api/employees', function(req, res){
 });
 
 //put ~= update
+
+//=======login========================
+app.post('/api/login', function(req, res){
+    // req.body should contain the employee loginId
+    // it is used to poll the data base employees collection and getr the data needed for post /twilioFeed
+    //it also will gate is login is correct
+    console.log('server.js has run post /api/login req.body = ', req.body);
+    Employees.findOne(req.body)
+        .exec(function(err, doc){
+            if(err){
+                console.log('server.js post /api/login has errored', err);
+            } else if (doc) {
+                console.log('server.js post /api/login doc =',doc);
+                console.log('server.js post /api/login doc.employeephone =',doc.employeephone);
+                twilio_obj.to = "+1"+doc.employeephone ;
+                //console.log('server.js post /api/login doc.login =',doc.isOnShift);
+                res.json(doc);
+            } else {
+                console.log('server.js post /api/login ran else -- doc = ', doc );
+                //res.json({isOnShift: false})
+            }
+        });
+
+});
+//===================================
 
 
 //=== shiftEvents ===================================================

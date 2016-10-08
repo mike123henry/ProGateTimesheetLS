@@ -6,7 +6,7 @@ var helpers = {
 
     // This will run our query.
     saveNewEmployee: function(signUpData){
-        //console.log("helpers signUpData", signUpData)
+        console.log("helpers signUpData", signUpData)
         return axios.post('/api/employees', signUpData)
             .then(function(results){
                 //console.log("axios post /api/employees", results._id);
@@ -28,6 +28,22 @@ var helpers = {
                 console.log("axios /api/shiftEvents results", results.data);
                 return results.data;
             })
+    },
+    sendText: function(message){
+        console.log("helpers sendText message = ", message);
+        return axios.post('/twilioFeed', message)
+            // .then(function(results){
+            //     console.log("axios /twilioFeed results", results.data);
+            //     return results.data;
+           // });
+    },
+    getLogin: function(loginId){
+        console.log("helpers getLogin loginId = ", loginId);
+        return axios.post('/api/login', loginId)
+            // .then(function(results){
+            //     console.log("axios /twilioFeed results", results.data);
+            //     return results.data;
+           // });
     }
 }
 

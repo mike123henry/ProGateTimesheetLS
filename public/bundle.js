@@ -27189,15 +27189,20 @@
 	            month: 0,
 	            date: 0,
 	            employeename: "",
+	            employeescreenname: "",
 	            employeeloginid: "",
-	            isOnShift: false,
+	            employeephone: "",
+	            isOnShift: "",
 	            firstName: "",
 	            lastName: "",
 	            loginFormOpen: false,
 	            signUpFormOpen: false,
-	            lastSSN: 9999,
+	            phone: "",
+	            screenName: "",
+	            loginId: "",
 	            newSignUp: false,
-	            newLogin: false
+	            newLogin: false,
+	            isInitialShiftDate: true //this is set to true because it is used in component will update and the change to only happens after the function runs
 	        };
 	    },
 	    handleLoginFormOpen: function handleLoginFormOpen() {
@@ -27212,56 +27217,45 @@
 	        } else {
 	            this.setState({ isLoggedIn: true });
 	        }
-	        // var that = this;
-	        // console.log('handleLogin employeeLoginId: this.state.employeeloginid = ',this.state.employeeloginid)
-	        // helpers.getInitialShift({employeeLoginId: this.state.employeeloginid})
-	        //     .then(function(isOnShiftRtn){
-	        //         console.log('isOnShiftRtn.isOnShift = ', isOnShiftRtn.isOnShift)
-	        //         that.setState({
-	        //             isOnShift: isOnShiftRtn.isOnShift
-	        //         })
-	        //     })
 	    },
-	    // handleSignUp: function(e){
-	    //     //console.log("NavBar handleSignUp 1")
-	    //     this.setState({
-	    //         firstName: e.target.value
-	    //     });
-	    //     console.log('this.state.firstName = ',this.state.firstName)
-	    // },
 	    handleFirstName: function handleFirstName(e) {
 	        //console.log("NavBar handleSignUp 1")
-	        this.setState({
-	            firstName: e.target.value
-	        });
+	        this.setState({ firstName: e.target.value.trim().toUpperCase() });
 	        console.log('this.state.firstName = ', this.state.firstName);
 	    },
 	    handleLastName: function handleLastName(e) {
 	        //console.log("NavBar handleSignUp 1")
-	        this.setState({
-	            lastName: e.target.value
-	        });
-	        console.log('this.state.firstName = ', this.state.firstName);
+	        this.setState({ lastName: e.target.value.trim().toUpperCase() });
+	        console.log('in handleLastName this.state.lastName = ', this.state.lastName);
 	    },
-	    handleLastSSN: function handleLastSSN(e) {
+	    handleScreenName: function handleScreenName(e) {
 	        //console.log("NavBar handleSignUp 1")
-	        this.setState({
-	            lastSSN: e.target.value
-	        });
-	        console.log('this.state.firstName = ', this.state.firstName);
+	        this.setState({ screenName: e.target.value.trim().toUpperCase() });
+	        console.log('in handleScreenName this.state.screenName = ', this.state.screenName);
+	    },
+	    handlePhone: function handlePhone(e) {
+	        //console.log("NavBar handleSignUp 1")
+	        this.setState({ phone: e.target.value.trim() });
+	        console.log('in handlePhone this.state.phone = ', this.state.phone);
+	    },
+	    handleLoginId: function handleLoginId(e) {
+	        //console.log("NavBar handleSignUp 1")
+	        this.setState({ loginId: e.target.value.trim().toUpperCase() });
+	        console.log('in handleLoginId this.state.loginId = ', this.state.loginId);
 	    },
 	    submitSignUpValue: function submitSignUpValue() {
 	        this.setState({
 	            employeename: this.state.firstName + " " + this.state.lastName,
-	            employeeloginid: this.state.lastName + this.state.lastSSN,
+	            employeeloginid: this.state.loginId,
+	            screenname: this.state.screenName,
+	            employeephone: this.state.phone,
 	            signUpFormOpen: false,
 	            newSignUp: true
 	        });
 	    },
 	    submitLoginValue: function submitLoginValue() {
 	        this.setState({
-	            employeename: this.state.firstName + " " + this.state.lastName,
-	            employeeloginid: this.state.lastName + this.state.lastSSN,
+	            employeeloginid: this.state.loginId,
 	            loginFormOpen: false,
 	            newLogin: true
 	        });
@@ -27282,22 +27276,6 @@
 	            //display err
 	            console.log('geoStuff errored in NavBar.js', err);
 	        });
-
-	        // noPromiseGeoStuff(function(position, err){
-	        //     console.log("this is my position", position);
-	        //     if(err) {
-	        //         return "blah"
-	        //         console.log("i errored")
-	        //     }
-	        //     that.setState({
-	        //         geolocation: true,
-	        //         geolat: position.latitude,
-	        //         geolng: position.longitude
-	        //     })
-	        // });
-	        //console.log("hts")
-	        //this.handleTimeStamp()
-	        //this.setState({isOnShift: !(this.isOnShift)})
 	    },
 	    handleTimeStamp: function handleTimeStamp() {
 	        //console.log("TS")
@@ -27319,7 +27297,9 @@
 	        if (this.state.newSignUp !== nextState.newSignUp && nextState.newSignUp === true) {
 	            var signUpData = {
 	                employeename: nextState.employeename,
-	                employeeloginid: nextState.employeeloginid
+	                employeeloginid: nextState.employeeloginid,
+	                employeescreenname: nextState.screenName,
+	                employeephone: nextState.employeephone
 	            };
 	            _helpers2.default.saveNewEmployee(signUpData);
 	            this.setState({ newSignUp: false });
@@ -27331,11 +27311,13 @@
 	            _helpers2.default.getInitialShift(loginData).then(function (isOnShiftRtn) {
 	                console.log('componentWillUpdate isOnShiftRtn.isOnShift = ', isOnShiftRtn.isOnShift);
 	                that.setState({
-	                    isOnShift: isOnShiftRtn.isOnShift
+	                    isOnShift: isOnShiftRtn.isOnShift,
+	                    isInitialShiftDate: true
 	                });
 	            });
 	            this.setState({ newLogin: false });
 	            this.handleLogin();
+	            _helpers2.default.getLogin(this.state.employeeloginid);
 	        };
 	        if (this.state.isOnShift !== nextState.isOnShift) {
 	            console.log('this.state.isOnShift = ', this.state.isOnShift);
@@ -27343,11 +27325,23 @@
 	            var shiftData = {
 	                employeename: nextState.employeename,
 	                employeeloginid: nextState.employeeloginid,
+
 	                isOnShift: nextState.isOnShift,
 	                geolat: nextState.geolat,
 	                geolng: nextState.geolng
 	            };
-	            _helpers2.default.saveNewShift(shiftData);
+	            if (nextState.isInitialShiftDate) {
+	                console.log('initialShiftData true this.state.isOnShift = ', this.state.isOnShift);
+	                console.log('initialShiftData nextState.isInitialShiftDate = ', nextState.isInitialShiftDate);
+	                console.log('initialShiftData this.state.isInitialShiftDate = ', this.state.isInitialShiftDate);
+	                this.setState({ isInitialShiftDate: false });
+	            } else {
+	                console.log('initialShiftData false this.state.isOnShift = ', this.state.isOnShift);
+	                console.log('nextState.isInitialShiftDate = ', nextState.isInitialShiftDate);
+	                console.log('this.state.isInitialShiftDate = ', this.state.isInitialShiftDate);
+	                _helpers2.default.saveNewShift(shiftData);
+	                _helpers2.default.sendText({ message: "build a better message here" });
+	            };
 	        };
 	    },
 	    render: function render() {
@@ -27381,9 +27375,23 @@
 	                _react2.default.createElement(
 	                    'h3',
 	                    null,
-	                    ' Enter Last 4 digits of SSN '
+	                    ' Screen Name '
 	                ),
-	                _react2.default.createElement('input', { value: this.state.lastSSN, onChange: this.handleLastSSN }),
+	                _react2.default.createElement('input', { value: this.state.screenName, onChange: this.handleScreenName }),
+	                _react2.default.createElement('br', null),
+	                _react2.default.createElement(
+	                    'h3',
+	                    null,
+	                    ' Enter Phone Number (numbers only no spaces or extra characters)'
+	                ),
+	                _react2.default.createElement('input', { value: this.state.phone, onChange: this.handlePhone }),
+	                _react2.default.createElement('br', null),
+	                _react2.default.createElement(
+	                    'h3',
+	                    null,
+	                    ' Enter login Id'
+	                ),
+	                _react2.default.createElement('input', { value: this.state.loginId, onChange: this.handleLoginId }),
 	                _react2.default.createElement('br', null),
 	                _react2.default.createElement(
 	                    'button',
@@ -27399,23 +27407,9 @@
 	                _react2.default.createElement(
 	                    'h3',
 	                    null,
-	                    ' First Name '
+	                    ' Enter login Id'
 	                ),
-	                _react2.default.createElement('input', { value: this.state.firstName, onChange: this.handleFirstName }),
-	                _react2.default.createElement('br', null),
-	                _react2.default.createElement(
-	                    'h3',
-	                    null,
-	                    ' Last Name '
-	                ),
-	                _react2.default.createElement('input', { value: this.state.lastName, onChange: this.handleLastName }),
-	                _react2.default.createElement('br', null),
-	                _react2.default.createElement(
-	                    'h3',
-	                    null,
-	                    ' Enter Last 4 digits of SSN '
-	                ),
-	                _react2.default.createElement('input', { value: this.state.lastSSN, onChange: this.handleLastSSN }),
+	                _react2.default.createElement('input', { value: this.state.loginId, onChange: this.handleLoginId }),
 	                _react2.default.createElement('br', null),
 	                _react2.default.createElement(
 	                    'button',
@@ -27423,7 +27417,7 @@
 	                    'Submit Login'
 	                )
 	            );
-	        }
+	        };
 	        if (this.state.isLoggedIn) {
 	            loginFlag = _react2.default.createElement(
 	                _reactBootstrap.Button,
@@ -27442,23 +27436,19 @@
 	                    { bsSize: 'small', bsStyle: 'success', type: 'submit', onClick: this.handleShift },
 	                    'Start Shift'
 	                );
-	            }
-	        } else {
-	            if (!this.state.signUpFormOpen && !this.state.loginFormOpen) {
-	                loginFlag = _react2.default.createElement(
-	                    _reactBootstrap.Button,
-	                    { bsSize: 'small', bsStyle: 'success', type: 'submit', onClick: this.handleLoginFormOpen },
-	                    'Log In'
-	                );
-	                signUpFlag = _react2.default.createElement(
-	                    _reactBootstrap.Button,
-	                    { bsSize: 'small', bsStyle: 'info', type: 'submit', onClick: this.handleSignUpFormOpen },
-	                    'Sign Up'
-	                );
-	            }
-	            //loginFlag = ( <Button bsSize="small" bsStyle="success" type="submit" onClick={this.handleLoginFormOpen} >Log In</Button>)
-	            //signUpFlag = ( <Button bsSize="small" bsStyle="info" type="submit" onClick={this.handleSignUpFormOpen}>Sign Up</Button>)
-	        }
+	            };
+	        } else if (!this.state.signUpFormOpen && !this.state.loginFormOpen) {
+	            loginFlag = _react2.default.createElement(
+	                _reactBootstrap.Button,
+	                { bsSize: 'small', bsStyle: 'success', type: 'submit', onClick: this.handleLoginFormOpen },
+	                'Log In xxx'
+	            );
+	            signUpFlag = _react2.default.createElement(
+	                _reactBootstrap.Button,
+	                { bsSize: 'small', bsStyle: 'info', type: 'submit', onClick: this.handleSignUpFormOpen },
+	                'Sign Up'
+	            );
+	        };
 	        if (this.state.geolocation) {
 	            geoLatLng = _react2.default.createElement(
 	                'p',
@@ -27484,13 +27474,7 @@
 	                ' : ',
 	                this.state.minutes
 	            );
-	        } else {
-	            geoFlag = _react2.default.createElement(
-	                'p',
-	                null,
-	                'GeoLocation Service not available'
-	            );
-	        }
+	        };
 	        return _react2.default.createElement(
 	            'div',
 	            { className: 'container' },
@@ -27508,9 +27492,7 @@
 	                    _react2.default.createElement(
 	                        _reactBootstrap.ButtonToolbar,
 	                        { style: floatRRight },
-	                        loginFlag,
-	                        signUpFlag,
-	                        shiftFlag
+	                        loginFlag
 	                    )
 	                )
 	            ),
@@ -27519,11 +27501,8 @@
 	            geoFlag,
 	            geoLatLng,
 	            time,
-	            _react2.default.createElement(
-	                _reactBootstrap.Button,
-	                { type: 'submit' },
-	                'Submit'
-	            )
+	            shiftFlag,
+	            signUpFlag
 	        );
 	    }
 	});
@@ -46362,7 +46341,7 @@
 
 	    // This will run our query.
 	    saveNewEmployee: function saveNewEmployee(signUpData) {
-	        //console.log("helpers signUpData", signUpData)
+	        console.log("helpers signUpData", signUpData);
 	        return axios.post('/api/employees', signUpData).then(function (results) {
 	            //console.log("axios post /api/employees", results._id);
 	            return results._id;
@@ -46381,6 +46360,22 @@
 	            console.log("axios /api/shiftEvents results", results.data);
 	            return results.data;
 	        });
+	    },
+	    sendText: function sendText(message) {
+	        console.log("helpers sendText message = ", message);
+	        return axios.post('/twilioFeed', message);
+	        // .then(function(results){
+	        //     console.log("axios /twilioFeed results", results.data);
+	        //     return results.data;
+	        // });
+	    },
+	    getLogin: function getLogin(loginId) {
+	        console.log("helpers getLogin loginId = ", loginId);
+	        return axios.post('/api/login', loginId);
+	        // .then(function(results){
+	        //     console.log("axios /twilioFeed results", results.data);
+	        //     return results.data;
+	        // });
 	    }
 	};
 
