@@ -27359,7 +27359,7 @@
 	                this.setState({ isInitialShiftDate: false });
 	            } else {
 	                //console.log('initialShiftData false this.state.isOnShift = ',this.state.isOnShift);
-	                if (this.state.isOnShift) {
+	                if (nextState.isOnShift) {
 	                    textMessage = " has started shift at ";
 	                } else {
 	                    textMessage = " has ended shift at ";
@@ -27375,6 +27375,9 @@
 	                    //console.log('moment = ', moment(shiftDataRtn.createdAt).format('MMMM Do YYYY, h:mm:ss a'));
 	                    //console.log('textMessage  3 = ',textMessage)
 	                    _helpers2.default.sendText({ message: textMessage });
+	                    var gglMap = "https://www.google.com/maps/@" + nextState.geolat + "," + nextState.geolng + ',128m/data=!3m1!1e3';
+	                    console.log('gglMap = ', gglMap);
+	                    _helpers2.default.sendText({ message: gglMap });
 	                });
 	            };
 	        };
