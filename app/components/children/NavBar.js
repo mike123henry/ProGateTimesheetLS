@@ -156,7 +156,7 @@ export default React.createClass({
             });
             this.setState({newLogin: false});
             this.handleLogin();
-            helpers.getLogin(this.state.employeeloginid)
+            helpers.getLogin(loginData)
         };
         if (this.state.isOnShift !== nextState.isOnShift ) {
             console.log('this.state.isOnShift = ',this.state.isOnShift);

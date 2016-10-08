@@ -27317,7 +27317,7 @@
 	            });
 	            this.setState({ newLogin: false });
 	            this.handleLogin();
-	            _helpers2.default.getLogin(this.state.employeeloginid);
+	            _helpers2.default.getLogin(loginData);
 	        };
 	        if (this.state.isOnShift !== nextState.isOnShift) {
 	            console.log('this.state.isOnShift = ', this.state.isOnShift);
