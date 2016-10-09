@@ -29,21 +29,21 @@ var helpers = {
                 return results.data;
             })
     },
-    sendText: function(message){
-        console.log("helpers sendText message = ", message);
-        return axios.post('/twilioFeed', message)
-            // .then(function(results){
-            //     console.log("axios /twilioFeed results", results.data);
-            //     return results.data;
-           // });
+    sendText: function(textInfo){
+        console.log("helpers sendText textInfo = ", textInfo);
+        return axios.post('/api/twilioFeed', textInfo)
+            .then(function(results){
+                 console.log("axios /api/twilioFeed results", results);
+                 return results;
+            });
     },
     getLogin: function(loginId){
         console.log("helpers getLogin loginId = ", loginId);
         return axios.post('/api/login', loginId)
-            // .then(function(results){
-            //     console.log("axios /twilioFeed results", results.data);
-            //     return results.data;
-           // });
+            .then(function(results){
+                 console.log("axios /api/login results", results);
+                 return results;
+            });
     }
 }
 

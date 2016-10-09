@@ -27193,7 +27193,7 @@
 	            employeename: "",
 	            employeescreenname: "",
 	            employeeloginid: "",
-	            employeephone: "",
+	            employeephone: "x",
 	            isOnShift: "",
 	            firstName: "",
 	            lastName: "",
@@ -27202,6 +27202,7 @@
 	            phone: "",
 	            screenName: "",
 	            loginId: "",
+	            loginFailed: "",
 	            newSignUp: false,
 	            newLogin: false,
 	            isInitialShiftDate: true //this is set to true because it is used in component will update and the change to only happens after the function runs
@@ -27258,16 +27259,21 @@
 	            newLogin: true
 	        });
 	    },
-	    displayLogin: function displayLogin(flag, loggedInAs) {
+	    displayLogin: function displayLogin(flag, loginData) {
 	        if (flag) {
+	            console.log('displayLogin loginData = ', loginData);
 	            this.setState({
-	                employeescreenname: loggedInAs,
-	                isLoggedIn: true
+	                employeescreenname: loginData.data.employeescreenname,
+	                employeephone: loginData.data.employeephone,
+	                isLoggedIn: true,
+	                loginFailed: ""
+
 	            });
 	        } else {
 	            this.setState({
 	                employeescreenname: "Login FAILED",
-	                isLoggedIn: false
+	                isLoggedIn: false,
+	                loginFailed: loginData.data
 	            });
 	        };
 	    },
@@ -27315,6 +27321,9 @@
 	            _helpers2.default.saveNewEmployee(signUpData);
 	            this.setState({ newSignUp: false });
 	        };
+	        if (!nextState.isLoggedIn && nextState.loginSuccess) {
+	            console.log("!isLoggedIn and loginSuccess", nextState.loginSuccess);
+	        };
 	        if (this.state.newLogin !== nextState.newLogin && nextState.newLogin === true) {
 	            var loginData = { employeeloginid: nextState.employeeloginid };
 	            var that = this;
@@ -27329,18 +27338,19 @@
 	            this.setState({ newLogin: false });
 	            _helpers2.default.getLogin(loginData).then(function (isLoginDoneRtn) {
 	                console.log('componentWillUpdate .getLogin isLoginDoneRtn = ', isLoginDoneRtn);
-	                console.log('componentWillUpdate .getLogin isLoginDoneRtn.data.employeescreenname = ', isLoginDoneRtn.data.employeescreenname);
+	                console.log('componentWillUpdate .getLogin isLoginDoneRtn.data.employeescreenname = ', isLoginDoneRtn.employeescreenname);
 
 	                if (isLoginDoneRtn.data.employeescreenname) {
-	                    that.displayLogin(true, isLoginDoneRtn.data.employeescreenname);
+	                    that.displayLogin(true, isLoginDoneRtn);
 	                } else {
-	                    that.displayLogin(false);
+	                    that.displayLogin(false, isLoginDoneRtn);
 	                }
 	            });
 	        };
 	        if (this.state.isOnShift !== nextState.isOnShift) {
 	            var that = this;
 	            var textMessage = nextState.employeescreenname;
+	            var textNumber = nextState.employeephone;
 	            //console.log('textMessage  nextState.employeescreenname = ',textMessage)
 	            //console.log('this.state.isOnShift = ',this.state.isOnShift);
 	            //console.log('nextState.isOnShift = ', nextState.isOnShift);
@@ -27352,6 +27362,7 @@
 	                geolat: nextState.geolat,
 	                geolng: nextState.geolng
 	            };
+
 	            if (nextState.isInitialShiftDate) {
 	                //console.log('initialShiftData true this.state.isOnShift = ',this.state.isOnShift);
 	                //console.log('initialShiftData nextState.isInitialShiftDate = ',nextState.isInitialShiftDate);
@@ -27368,16 +27379,23 @@
 	                //console.log('nextState.isInitialShiftDate = ',nextState.isInitialShiftDate);
 	                //console.log('this.state.isInitialShiftDate = ',this.state.isInitialShiftDate);
 	                _helpers2.default.saveNewShift(shiftData).then(function (shiftDataRtn) {
-	                    //console.log("that.state.employeescreenname = ",that.state.employeescreenname)
+	                    console.log("saveNewShift then  shiftDataRtn= ", shiftDataRtn);
+	                    console.log('saveNewShift then nextState.employeephone', nextState.employeephone);
+
 	                    textMessage = nextState.employeescreenname + textMessage + moment(shiftDataRtn.createdAt).format('MMMM Do YYYY, h:mm:ss a');
-	                    //console.log('textMessage  2 = ',textMessage)
+	                    textNumber = "+1" + nextState.employeephone;
+	                    console.log('textNumber   = ', textNumber);
 	                    //console.log('helpers.saveNewShift.then shiftDataRtn.createdAt = ',shiftDataRtn.createdAt)
 	                    //console.log('moment = ', moment(shiftDataRtn.createdAt).format('MMMM Do YYYY, h:mm:ss a'));
 	                    //console.log('textMessage  3 = ',textMessage)
-	                    _helpers2.default.sendText({ message: textMessage });
+	                    _helpers2.default.sendText({ message: textMessage, to: textNumber }).then(function (sendTextRtn) {
+	                        console.log('sendText then textMessage sendTextRtn =', sendTextRtn);
+	                    });
 	                    var gglMap = "https://www.google.com/maps/@" + nextState.geolat + "," + nextState.geolng + ',128m/data=!3m1!1e3';
 	                    console.log('gglMap = ', gglMap);
-	                    _helpers2.default.sendText({ message: gglMap });
+	                    _helpers2.default.sendText({ message: gglMap, to: textNumber }).then(function (sendTextRtn) {
+	                        console.log('sendText then gglMap sendTextRtn =', sendTextRtn);
+	                    });
 	                });
 	            };
 	        };
@@ -27391,7 +27409,8 @@
 	            time = void 0,
 	            signUpForm = void 0,
 	            loginForm = void 0,
-	            screenName = void 0;
+	            screenName = void 0,
+	            loginFailedFlag = void 0;
 
 	        if (this.state.signUpFormOpen) {
 	            signUpForm = _react2.default.createElement(
@@ -27561,6 +27580,17 @@
 	                this.state.minutes
 	            );
 	        };
+	        if (this.state.loginFailed) {
+	            loginFailedFlag = _react2.default.createElement(
+	                'h3',
+	                null,
+	                ' Login ',
+	                this.state.loginFailed,
+	                ' '
+	            );
+	        } else {
+	            loginFailedFlag = "";
+	        }
 	        return _react2.default.createElement(
 	            'div',
 	            { className: 'container' },
@@ -27585,6 +27615,7 @@
 	            _react2.default.createElement(
 	                'div',
 	                { className: 'text-center' },
+	                loginFailedFlag,
 	                signUpForm,
 	                loginForm,
 	                shiftFlag,
@@ -46448,21 +46479,19 @@
 	            return results.data;
 	        });
 	    },
-	    sendText: function sendText(message) {
-	        console.log("helpers sendText message = ", message);
-	        return axios.post('/twilioFeed', message);
-	        // .then(function(results){
-	        //     console.log("axios /twilioFeed results", results.data);
-	        //     return results.data;
-	        // });
+	    sendText: function sendText(textInfo) {
+	        console.log("helpers sendText textInfo = ", textInfo);
+	        return axios.post('/api/twilioFeed', textInfo).then(function (results) {
+	            console.log("axios /api/twilioFeed results", results);
+	            return results;
+	        });
 	    },
 	    getLogin: function getLogin(loginId) {
 	        console.log("helpers getLogin loginId = ", loginId);
-	        return axios.post('/api/login', loginId);
-	        // .then(function(results){
-	        //     console.log("axios /twilioFeed results", results.data);
-	        //     return results.data;
-	        // });
+	        return axios.post('/api/login', loginId).then(function (results) {
+	            console.log("axios /api/login results", results);
+	            return results;
+	        });
 	    }
 	};
 

@@ -27,7 +27,7 @@ export default React.createClass({
             employeename: "",
             employeescreenname: "",
             employeeloginid: "",
-            employeephone: "",
+            employeephone: "x",
             isOnShift: "",
             firstName: "",
             lastName: "",
@@ -36,6 +36,7 @@ export default React.createClass({
             phone: "",
             screenName: "",
             loginId: "",
+            loginFailed: "",
             newSignUp: false,
             newLogin: false,
             isInitialShiftDate: true //this is set to true because it is used in component will update and the change to only happens after the function runs
@@ -92,16 +93,21 @@ export default React.createClass({
             newLogin: true
         });
     },
-    displayLogin: function(flag, loggedInAs){
+    displayLogin: function(flag, loginData){
         if (flag){
+            console.log('displayLogin loginData = ',loginData)
             this.setState({
-                employeescreenname: loggedInAs,
-                isLoggedIn: true
+                employeescreenname: loginData.data.employeescreenname,
+                employeephone: loginData.data.employeephone,
+                isLoggedIn: true,
+                loginFailed: ""
+
             });
         } else {
             this.setState({
                 employeescreenname: "Login FAILED",
-                isLoggedIn: false
+                isLoggedIn: false,
+                loginFailed: loginData.data
                 });
         };
     },
@@ -151,7 +157,10 @@ export default React.createClass({
             helpers.saveNewEmployee(signUpData);
             this.setState({newSignUp: false})
         };
-         if ( this.state.newLogin !== nextState.newLogin && nextState.newLogin === true) {
+        if (!nextState.isLoggedIn && nextState.loginSuccess) {
+            console.log("!isLoggedIn and loginSuccess", nextState.loginSuccess)
+        };
+        if ( this.state.newLogin !== nextState.newLogin && nextState.newLogin === true) {
             var loginData =  { employeeloginid: nextState.employeeloginid};
             var that = this;
             console.log('componentWillUpdate loginData = ',loginData)
@@ -167,18 +176,19 @@ export default React.createClass({
             helpers.getLogin(loginData)
                 .then(function(isLoginDoneRtn){
                     console.log('componentWillUpdate .getLogin isLoginDoneRtn = ',isLoginDoneRtn)
-                    console.log('componentWillUpdate .getLogin isLoginDoneRtn.data.employeescreenname = ',isLoginDoneRtn.data.employeescreenname)
+                    console.log('componentWillUpdate .getLogin isLoginDoneRtn.data.employeescreenname = ',isLoginDoneRtn.employeescreenname)
 
                     if (isLoginDoneRtn.data.employeescreenname){
-                        that.displayLogin(true, isLoginDoneRtn.data.employeescreenname);
+                        that.displayLogin(true, isLoginDoneRtn);
                     } else {
-                        that.displayLogin(false);
+                        that.displayLogin(false, isLoginDoneRtn);
                     }
                 })
         };
         if (this.state.isOnShift !== nextState.isOnShift ) {
             var that = this
             var textMessage = nextState.employeescreenname;
+            var textNumber = nextState.employeephone
             //console.log('textMessage  nextState.employeescreenname = ',textMessage)
             //console.log('this.state.isOnShift = ',this.state.isOnShift);
             //console.log('nextState.isOnShift = ', nextState.isOnShift);
@@ -190,6 +200,7 @@ export default React.createClass({
                 geolat: nextState.geolat,
                 geolng: nextState.geolng
             };
+
             if (nextState.isInitialShiftDate) {
                 //console.log('initialShiftData true this.state.isOnShift = ',this.state.isOnShift);
                 //console.log('initialShiftData nextState.isInitialShiftDate = ',nextState.isInitialShiftDate);
@@ -208,24 +219,33 @@ export default React.createClass({
                 //console.log('this.state.isInitialShiftDate = ',this.state.isInitialShiftDate);
                 helpers.saveNewShift(shiftData)
                     .then(function(shiftDataRtn){
-                        //console.log("that.state.employeescreenname = ",that.state.employeescreenname)
+                        console.log("saveNewShift then  shiftDataRtn= ",shiftDataRtn);
+                        console.log('saveNewShift then nextState.employeephone',nextState.employeephone)
+
                         textMessage = nextState.employeescreenname + textMessage + moment(shiftDataRtn.createdAt).format('MMMM Do YYYY, h:mm:ss a');
-                        //console.log('textMessage  2 = ',textMessage)
+                        textNumber = "+1"+nextState.employeephone;
+                        console.log('textNumber   = ',textNumber);
                         //console.log('helpers.saveNewShift.then shiftDataRtn.createdAt = ',shiftDataRtn.createdAt)
                         //console.log('moment = ', moment(shiftDataRtn.createdAt).format('MMMM Do YYYY, h:mm:ss a'));
                         //console.log('textMessage  3 = ',textMessage)
-                        helpers.sendText({message: textMessage});
-                        var gglMap = "https://www.google.com/maps/@"+nextState.geolat+","+nextState.geolng+',128m/data=!3m1!1e3'
-                        console.log('gglMap = ',gglMap)
-                         helpers.sendText({message: gglMap});
-                    })
+                        helpers.sendText({message: textMessage, to:textNumber})
+                            .then(function(sendTextRtn){
+                                console.log('sendText then textMessage sendTextRtn =', sendTextRtn)
+                            });
+                        var gglMap = "https://www.google.com/maps/@"+nextState.geolat+","+nextState.geolng+',128m/data=!3m1!1e3';
+                        console.log('gglMap = ',gglMap);
+                         helpers.sendText({message: gglMap,to:textNumber})
+                            .then(function(sendTextRtn){
+                                console.log('sendText then gglMap sendTextRtn =', sendTextRtn)
+                            });
+                    });
 
             };
 
         };
     },
     render: function(){
-        let loginFlag, signUpFlag,geoFlag,geoLatLng,shiftFlag,time,signUpForm,loginForm,screenName;
+        let loginFlag, signUpFlag,geoFlag,geoLatLng,shiftFlag,time,signUpForm,loginForm,screenName,loginFailedFlag;
 
         if(this.state.signUpFormOpen){
             signUpForm = (
@@ -292,6 +312,11 @@ export default React.createClass({
             geoFlag = (<p></p>)
             time = (<p>TimeStamp = {this.state.day} {this.state.month} {this.state.date} at {this.state.hour} : {this.state.minutes}</p>)
         };
+        if (this.state.loginFailed) {
+            loginFailedFlag = <h3> Login {this.state.loginFailed} </h3>
+        } else {
+            loginFailedFlag = ""
+        }
         return (
             <div className="container">
                 {/*add navbar*/}
@@ -307,6 +332,7 @@ export default React.createClass({
                     </Navbar.Header>
                 </Navbar>
                 <div className="text-center">
+                    {loginFailedFlag}
                     {signUpForm}
                     {loginForm}
                     {shiftFlag}
