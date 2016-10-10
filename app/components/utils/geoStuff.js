@@ -1,6 +1,6 @@
  var options = {
-      enableHighAccuracy: false,
-      timeout: 50000,
+      enableHighAccuracy: true,
+      timeout: 5000,
       maximumAge: 0
     };
 
