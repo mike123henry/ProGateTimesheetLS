@@ -113,6 +113,7 @@ export default React.createClass({
     },
     handleShift: function(){
         //set that = to this because the scope of this will change when geoStuff() is called
+        console.log("navbar.js handleShify has run")
         var that = this;
         geoStuff()
             .then(function(position){
