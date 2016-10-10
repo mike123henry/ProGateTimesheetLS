@@ -27218,29 +27218,19 @@
 	        this.setState({ isLoggedIn: false });
 	    },
 	    handleFirstName: function handleFirstName(e) {
-	        //console.log("NavBar handleSignUp 1")
 	        this.setState({ firstName: e.target.value.trim().toUpperCase() });
-	        console.log('this.state.firstName = ', this.state.firstName);
 	    },
 	    handleLastName: function handleLastName(e) {
-	        //console.log("NavBar handleSignUp 1")
 	        this.setState({ lastName: e.target.value.trim().toUpperCase() });
-	        console.log('in handleLastName this.state.lastName = ', this.state.lastName);
 	    },
 	    handleScreenName: function handleScreenName(e) {
-	        //console.log("NavBar handleSignUp 1")
 	        this.setState({ screenName: e.target.value.trim().toUpperCase() });
-	        console.log('in handleScreenName this.state.screenName = ', this.state.screenName);
 	    },
 	    handlePhone: function handlePhone(e) {
-	        //console.log("NavBar handleSignUp 1")
 	        this.setState({ phone: e.target.value.trim() });
-	        console.log('in handlePhone this.state.phone = ', this.state.phone);
 	    },
 	    handleLoginId: function handleLoginId(e) {
-	        //console.log("NavBar handleSignUp 1")
 	        this.setState({ loginId: e.target.value.trim().toUpperCase() });
-	        console.log('in handleLoginId this.state.loginId = ', this.state.loginId);
 	    },
 	    submitSignUpValue: function submitSignUpValue() {
 	        this.setState({
@@ -27261,7 +27251,6 @@
 	    },
 	    displayLogin: function displayLogin(flag, loginData) {
 	        if (flag) {
-	            console.log('displayLogin loginData = ', loginData);
 	            this.setState({
 	                employeescreenname: loginData.data.employeescreenname,
 	                employeephone: loginData.data.employeephone,
@@ -27279,7 +27268,6 @@
 	    },
 	    handleShift: function handleShift() {
 	        //set that = to this because the scope of this will change when geoStuff() is called
-	        console.log("navbar.js handleShify has run");
 	        var that = this;
 	        (0, _geoStuff2.default)().then(function (position) {
 	            that.setState({
@@ -27287,16 +27275,13 @@
 	                geolat: position.latitude,
 	                geolng: position.longitude
 	            });
-	            console.log('b4 isOnShift', that.state.isOnShift);
 	            that.setState({ isOnShift: !that.state.isOnShift });
-	            console.log('after isOnShift', that.state.isOnShift);
 	        }).catch(function (err) {
 	            //display err
 	            console.log('geoStuff errored in NavBar.js', err);
 	        });
 	    },
 	    handleTimeStamp: function handleTimeStamp() {
-	        //console.log("TS")
 	        this.setState({
 	            day: _timeStamp2.default.getDayOfWeek(),
 	            hour: _timeStamp2.default.getHour(),
@@ -27322,15 +27307,11 @@
 	            _helpers2.default.saveNewEmployee(signUpData);
 	            this.setState({ newSignUp: false });
 	        };
-	        if (!nextState.isLoggedIn && nextState.loginSuccess) {
-	            console.log("!isLoggedIn and loginSuccess", nextState.loginSuccess);
-	        };
+	        if (!nextState.isLoggedIn && nextState.loginSuccess) {};
 	        if (this.state.newLogin !== nextState.newLogin && nextState.newLogin === true) {
 	            var loginData = { employeeloginid: nextState.employeeloginid };
 	            var that = this;
-	            console.log('componentWillUpdate loginData = ', loginData);
 	            _helpers2.default.getInitialShift(loginData).then(function (isOnShiftRtn) {
-	                console.log('componentWillUpdate isOnShiftRtn.isOnShift = ', isOnShiftRtn.isOnShift);
 	                that.setState({
 	                    isOnShift: isOnShiftRtn.isOnShift,
 	                    isInitialShiftDate: true
@@ -27338,9 +27319,6 @@
 	            });
 	            this.setState({ newLogin: false });
 	            _helpers2.default.getLogin(loginData).then(function (isLoginDoneRtn) {
-	                console.log('componentWillUpdate .getLogin isLoginDoneRtn = ', isLoginDoneRtn);
-	                console.log('componentWillUpdate .getLogin isLoginDoneRtn.data.employeescreenname = ', isLoginDoneRtn.employeescreenname);
-
 	                if (isLoginDoneRtn.data.employeescreenname) {
 	                    that.displayLogin(true, isLoginDoneRtn);
 	                } else {
@@ -27352,9 +27330,6 @@
 	            var that = this;
 	            var textMessage = nextState.employeescreenname;
 	            var textNumber = nextState.employeephone;
-	            //console.log('textMessage  nextState.employeescreenname = ',textMessage)
-	            //console.log('this.state.isOnShift = ',this.state.isOnShift);
-	            //console.log('nextState.isOnShift = ', nextState.isOnShift);
 	            var shiftData = {
 	                employeename: nextState.employeename,
 	                employeeloginid: nextState.employeeloginid,
@@ -27365,44 +27340,26 @@
 	            };
 
 	            if (nextState.isInitialShiftDate) {
-	                //console.log('initialShiftData true this.state.isOnShift = ',this.state.isOnShift);
-	                //console.log('initialShiftData nextState.isInitialShiftDate = ',nextState.isInitialShiftDate);
-	                //console.log('initialShiftData this.state.isInitialShiftDate = ',this.state.isInitialShiftDate);
 	                this.setState({ isInitialShiftDate: false });
 	            } else {
-	                //console.log('initialShiftData false this.state.isOnShift = ',this.state.isOnShift);
 	                if (nextState.isOnShift) {
 	                    textMessage = " has started shift at ";
 	                } else {
 	                    textMessage = " has ended shift at ";
 	                }
-	                //console.log('textMessage  1 = ',textMessage)
-	                //console.log('nextState.isInitialShiftDate = ',nextState.isInitialShiftDate);
-	                //console.log('this.state.isInitialShiftDate = ',this.state.isInitialShiftDate);
 	                _helpers2.default.saveNewShift(shiftData).then(function (shiftDataRtn) {
-	                    console.log("saveNewShift then  shiftDataRtn= ", shiftDataRtn);
-	                    console.log('saveNewShift then nextState.employeephone', nextState.employeephone);
-
 	                    textMessage = nextState.employeescreenname + textMessage + moment(shiftDataRtn.createdAt).format('MMMM Do YYYY, h:mm:ss a');
 	                    textNumber = "+1" + nextState.employeephone;
-	                    console.log('textNumber   = ', textNumber);
-	                    //console.log('helpers.saveNewShift.then shiftDataRtn.createdAt = ',shiftDataRtn.createdAt)
-	                    //console.log('moment = ', moment(shiftDataRtn.createdAt).format('MMMM Do YYYY, h:mm:ss a'));
-	                    //console.log('textMessage  3 = ',textMessage)
-	                    _helpers2.default.sendText({ message: textMessage, to: textNumber }).then(function (sendTextRtn) {
-	                        console.log('sendText then textMessage sendTextRtn =', sendTextRtn);
-	                    });
+	                    _helpers2.default.sendText({ message: textMessage, to: textNumber }).then(function (sendTextRtn) {});
 	                    var gglMap = "https://www.google.com/maps/@" + nextState.geolat + "," + nextState.geolng + ',128m/data=!3m1!1e3';
-	                    console.log('gglMap = ', gglMap);
-	                    _helpers2.default.sendText({ message: gglMap, to: textNumber }).then(function (sendTextRtn) {
-	                        console.log('sendText then gglMap sendTextRtn =', sendTextRtn);
-	                    });
+	                    _helpers2.default.sendText({ message: gglMap, to: textNumber }).then(function (sendTextRtn) {});
 	                });
 	            };
 	        };
 	    },
 	    render: function render() {
 	        var loginFlag = void 0,
+	            signUpFlagxx = void 0,
 	            signUpFlag = void 0,
 	            geoFlag = void 0,
 	            geoLatLng = void 0,
@@ -27413,7 +27370,7 @@
 	            screenName = void 0,
 	            loginFailedFlag = void 0;
 
-	        if (this.state.signUpFormOpen) {
+	        if (this.state.signUpFormOpen && false) {
 	            signUpForm = _react2.default.createElement(
 	                'div',
 	                null,
@@ -27469,6 +27426,8 @@
 	                    ' Enter login Id'
 	                ),
 	                _react2.default.createElement('input', { value: this.state.loginId, onChange: this.handleLoginId }),
+	                _react2.default.createElement('br', null),
+	                _react2.default.createElement('br', null),
 	                _react2.default.createElement('br', null),
 	                _react2.default.createElement(
 	                    'button',
@@ -27604,7 +27563,7 @@
 	                    _react2.default.createElement(
 	                        _reactBootstrap.Navbar.Brand,
 	                        null,
-	                        'Pro Gate'
+	                        'Pro Gate Security'
 	                    ),
 	                    _react2.default.createElement(
 	                        _reactBootstrap.ButtonToolbar,
@@ -27620,7 +27579,7 @@
 	                signUpForm,
 	                loginForm,
 	                shiftFlag,
-	                signUpFlag
+	                signUpFlagxx
 	            )
 	        );
 	    }
@@ -46429,25 +46388,17 @@
 	  maximumAge: 0
 	};
 
-	console.log('geostuff.js has run');
-	alert("geostuff.js has run");
 	module.exports = function () {
 
 	  return new Promise(function (resolve, reject) {
-	    console.log('geostuff.js has run 2');
-	    alert("geostuff.js has run 2");
 	    navigator.geolocation.getCurrentPosition(success, error, options);
 
 	    function success(pos) {
-	      console.log('geostuff.js has run success');
-	      alert("geostuff.js has run success");
 	      var crd = pos.coords;
 	      resolve(crd);
 	    };
 
 	    function error(err) {
-	      console.log('geostuff.js has run error', err);
-	      alert("geostuff.js has run error", err);
 	      console.warn('ERROR(' + err.code + '): ' + err.message);
 	      reject(err);
 	    };
